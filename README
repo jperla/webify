@@ -2,3 +2,18 @@ Webify
 ======
 
 The lazy man's web framework
+
+
+Philosophy
+==========
+* Don't repeat yourself
+* Simplicity over features
+* Clarity over cleverness
+* Make only Order of Mgnitude improvements
+* Defaults over options
+* Exactly one obvious way to do anything
+* Build bottom-up as well as top-down
+* Don't repeat yourself
+* Innovation over patterns
+* No magic
+* Write sloppy, test quickly, rebuild cleanly
