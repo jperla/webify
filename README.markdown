@@ -5,7 +5,7 @@ The lazy man's web framework
 
 Purpose
 =======
-You have a great program.  Webify and deploy it in under *5* minutes.
+You have a great program.  Webify and deploy it in under _5_ minutes.
 
 
 Programming and Design Philosophy
