@@ -26,6 +26,23 @@ Example: a complete Webify application
 Try and load http://127.0.0.1:8080/world?times=100000
 
 
+API
+===
+I strive for a bug-free master branch.  
+
+As to the stability of the API and backwards-compatibility, 
+I guarantee nothing.  In fact, I guarantee that I will change
+the API many times, breaking unmodified applications, sometimes
+purposefully to keep you mindful.
+
+I will keep my promise both through the beta and after 1.0.
+
+Legacy code kills the pace of development, snowballs cruft, 
+and holds back the possibility of game-changing improvements.
+
+On the other hand, branches of point versions may be maintained
+with bug fixes for those who want to stay secure, but do not need
+new features.
 
 
 Programming and Design Philosophy
