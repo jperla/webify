@@ -25,6 +25,24 @@ Example: a complete Webify application
       
 Try and load http://127.0.0.1:8080/world?times=100000
 
+Programming and Design Philosophy
+=================================
+* The Zen of Python
+* Don't repeat yourself
+* Simplicity over features
+* Clarity over cleverness
+* Explicit is better than implicit
+* No magic
+* Make only Order of Magnitude improvements
+* Defaults over options
+* Innovation over patterns
+* Exactly one obvious way to do anything
+* Build bottom-up as well as top-down
+* Code less
+* Don't repeat yourself
+* Write sloppy, test quickly, rebuild cleanly
+* No pagination
+
 
 API
 ===
@@ -44,24 +62,6 @@ On the other hand, branches of point versions may be maintained
 with bug fixes for those who want to stay secure, but do not need
 new features.
 
-
-Programming and Design Philosophy
-=================================
-* The Zen of Python
-* Don't repeat yourself
-* Simplicity over features
-* Clarity over cleverness
-* Explicit is better than implicit
-* No magic
-* Make only Order of Magnitude improvements
-* Defaults over options
-* Innovation over patterns
-* Exactly one obvious way to do anything
-* Build bottom-up as well as top-down
-* Code less
-* Don't repeat yourself
-* Write sloppy, test quickly, rebuild cleanly
-* No pagination
 
 License
 =======
