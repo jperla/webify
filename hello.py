@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import time
 
-from .. import webify
+import webify
 
 # Controller
 import webify.defaults
