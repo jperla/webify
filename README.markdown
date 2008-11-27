@@ -52,14 +52,16 @@ Programming and Design Philosophy
 * Simplicity over features
 * Clarity over cleverness
 * Explicit is better than implicit
+* No magic
 * Make only Order of Magnitude improvements
 * Defaults over options
+* Innovation over patterns
 * Exactly one obvious way to do anything
 * Build bottom-up as well as top-down
+* Code less
 * Don't repeat yourself
-* Innovation over patterns
-* NO MAGIC
 * Write sloppy, test quickly, rebuild cleanly
+* No pagination
 
 License
 =======
