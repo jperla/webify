@@ -1,8 +1,10 @@
-import http.status
-import http.headers.content_type
+from __future__ import absolute_import
 
-status = http.status.ok
-content_type = http.headers.content_type.html
+from ..http import status as __status
+from ..http.headers import content_type as __content_type
+
+status = __status.ok
+content_type = __content_type.html
 headers = [content_type,]
 
 status_and_headers = status, headers

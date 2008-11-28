@@ -1,13 +1,14 @@
+from __future__ import absolute_import
 import re
 
 from webob import Request, Response
 
-import apps.simplest
-import apps.hello
+from .apps import simplest
+from .apps import hello
 
 def test_simplest():
     req = Request.blank('http://localhost/world?times=3')
-    resp = req.get_response(apps.simplest.hello)
+    resp = req.get_response(simplest.hello)
     assert '200' in str(resp)
     assert 'world' in str(resp)
     assert 'Hello, world!' in str(resp)
@@ -16,7 +17,7 @@ def test_simplest():
 
 def test_hello():
     hello_req = Request.blank('http://localhost/hello')
-    hello_resp = hello_req.get_response(apps.hello.app)
+    hello_resp = hello_req.get_response(hello.app)
     assert '200' in str(hello_resp)
     assert 'world' in str(hello_resp)
     assert 'Hello, world!' in str(hello_resp)

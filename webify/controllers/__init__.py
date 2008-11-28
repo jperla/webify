@@ -1,6 +1,9 @@
-import webify.defaults
+from __future__ import absolute_import
+
 from webob import Request, Response
 from webob import exc
+
+from .. import defaults
 
 def raw_controller(func):
     def replacement(environ, start_response):
@@ -35,7 +38,7 @@ def incremental_controller(func):
             resp = e
             return resp(environ, start_response)
         else:
-            status, headers = webify.defaults.status_and_headers
+            status, headers = defaults.status_and_headers
             start_response(status, headers)
             return resp_generator
     return replacement

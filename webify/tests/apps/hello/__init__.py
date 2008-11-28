@@ -6,6 +6,7 @@ import webify
 # Controller
 import webify.defaults
 from webify.controllers import controller, advanced_incremental_controller
+
 @advanced_incremental_controller
 def hello(req):
     assert(req.method == 'GET')
