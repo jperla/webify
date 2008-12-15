@@ -5,11 +5,11 @@ import webify
 @webify.incremental_controller
 def hello(req):
     context = {'name': req.params.get('name', 'world')}
-    return hello_template(context)
+    return hello_template(context, req)
 
 # Templates
 # This would normally be in a different file in a different module 
-def hello_template(context):
+def hello_template(context, req):
     yield '''<form method="POST">'''
     yield '''Hello, %(name)s! <br />''' % context
     yield '''Your name: <input type="text" name="name">'''
