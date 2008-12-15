@@ -3,6 +3,7 @@ from __future__ import absolute_import
 from webob import Request, Response
 from webob import exc
 
+from .. import templates
 from .. import defaults
 
 def raw_controller(func):
@@ -58,4 +59,19 @@ def advanced_incremental_controller(func):
             start_response(status, headers)
             return resp_generator
     return replacement
+
+def python_template_controller(func):
+    def replacement(environ, start_response):
+        req = Request(environ)
+        try:
+            filename, resp_context = func(req)
+        except exc.HTTPException, e:
+            resp = e
+            return resp(environ, start_response)
+        else:
+            status, headers = defaults.status_and_headers
+            start_response(status, headers)
+            return templates.python_template(filename, resp_context)
+    return replacement
+
 

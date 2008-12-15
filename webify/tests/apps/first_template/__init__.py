@@ -5,21 +5,18 @@ import webify
 
 # Controller
 import webify.defaults
-from webify.controllers import controller, advanced_incremental_controller
-from webify.templates import python_template
+from webify.controllers import (controller,
+                               advanced_incremental_controller,
+                               python_template_controller)
 
-@advanced_incremental_controller
+@python_template_controller
 def hello(req):
-    yield webify.defaults.status_and_headers
-    yield '''<form method="POST">'''
+    filename = '/home/jperla/projects/webify/webify/tests/apps/first_template/template.html.py'
+    context = {}
     name = req.params.get('name', None)
-    if name is None:
-        yield '''Hello, world! <br />'''
-    else:
-        yield '''Hello, %(name)s! <br />''' % {'name': name}
-    yield '''Your name: <input type="text" name="name">'''
-    yield '''<input type="submit">'''
-    yield '''</form>'''
+    if name is not None:
+        context['name'] = name
+    return filename, context
 
 # Urls
 from webify.urls.dispatchers import NoURLDispatcher
