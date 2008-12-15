@@ -56,10 +56,10 @@ Webify includes
 
 
 Webify still needs, in order,
+* Models and backend storage 
 * URL dispatching and redirects
-* Modeling and backend storage 
 * Documentation, auto-generated from codebase, with auto-tests
-* Sessions, authentication
+* Sessions and authentication
 * Email
 * Webapp testing framework with fixtures
 * Pluggable sub-webapps
@@ -75,8 +75,8 @@ Webify still needs, in order,
 
 Webify will never have
 * { Braces }
-* Clunky design
 * Pagination
+* Clunky design
 * Repetition
 * Repetition
 
