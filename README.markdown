@@ -46,31 +46,31 @@ Programming and Design Philosophy
 TODO
 ====
 Webify includes 
-  * controllers
-  * templates, subtemplates, and layouts
-  * forms
-  * middleware
-  * a debugging and production server thread
-  * smallest python app period
-  * very extensible and easy to understand
+* controllers
+* templates, subtemplates, and layouts
+* forms
+* middleware
+* a debugging and production server thread
+* smallest python app period
+* very extensible and easy to understand
 
 
 Webify still needs, in order,
-  * URL dispatching and redirects
-  * Modeling and backend storage 
-  * Documentation, auto-generated from codebase, with auto-tests
-  * Sessions, authentication
-  * Email
-  * Webapp testing framework with fixtures
-  * Pluggable sub-webapps
-  * Auto-admin (databrowse?)
-  * Standard template filters
-  * Synchronous and asynchronous signals and dispatchers
-  * Cache system
-  * Internationalization
-  * CSRF protection
-  * Sitemaps
-  * RSS Feeds
+* URL dispatching and redirects
+* Modeling and backend storage 
+* Documentation, auto-generated from codebase, with auto-tests
+* Sessions, authentication
+* Email
+* Webapp testing framework with fixtures
+* Pluggable sub-webapps
+* Auto-admin (databrowse?)
+* Standard template filters
+* Synchronous and asynchronous signals and dispatchers
+* Cache system
+* Internationalization
+* CSRF protection
+* Sitemaps
+* RSS Feeds
 
 
 Webify will never have
