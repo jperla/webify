@@ -74,11 +74,11 @@ Webify still needs, in order,
 
 
 Webify will never have
-  * { Braces }
-  * Clunky design
-  * Pagination
-  * Repetition
-  * Repetition
+* { Braces }
+* Clunky design
+* Pagination
+* Repetition
+* Repetition
 
 
 ACKNOWLEDGEMENTS
