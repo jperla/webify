@@ -1,8 +1,8 @@
-yield '''<form method="POST">'''
-if name in context:
-    yield '''Hello, world! <br />'''
+print('''<form method="POST">''')
+if 'name' in context:
+    print('''Hello, world! <br />''')
 else:
-    yield '''Hello, %(name)s! <br />''' % context
-yield '''Your name: <input type="text" name="name">'''
-yield '''<input type="submit">'''
-yield '''</form>'''
+    print('''Hello, %(name)s! <br />''' % context)
+print('''Your name: <input type="text" name="name">''')
+print('''<input type="submit">''')
+print('''</form>''')
