@@ -43,6 +43,52 @@ Programming and Design Philosophy
 * Write sloppy, test quickly, rebuild cleanly
 * No pagination
 
+TODO
+====
+Webify includes 
+  * controllers
+  * templates, subtemplates, and layouts
+  * forms
+  * middleware
+  * a debugging and production server thread
+  * smallest python app period
+  * very extensible and easy to understand
+
+
+Webify still needs, in order,
+  * URL dispatching and redirects
+  * Modeling and backend storage 
+  * Documentation, auto-generated from codebase, with auto-tests
+  * Sessions, authentication
+  * Email
+  * Webapp testing framework with fixtures
+  * Pluggable sub-webapps
+  * Auto-admin (databrowse?)
+  * Standard template filters
+  * Synchronous and asynchronous signals and dispatchers
+  * Cache system
+  * Internationalization
+  * CSRF protection
+  * Sitemaps
+  * RSS Feeds
+
+
+Webify will never have
+  * { Braces }
+  * Clunky design
+  * Pagination
+  * Repetition
+  * Repetition
+
+
+ACKNOWLEDGEMENTS
+================
+Webify borrows heavily from existing Python web architectures 
+and thanks them profusely for their high quality.
+
+Thank you WebOb and Paste for much of this code.  
+Also, thank you Ian Bicking, Django developers, and Guido van Rossum 
+for great design ideas and a high standard of excellence.
 
 API
 ===
@@ -53,7 +99,7 @@ I guarantee nothing.  In fact, I guarantee that I will change
 the API many times, breaking unmodified applications, sometimes
 purposefully to keep you mindful.
 
-I will keep my promise both through the beta and after 1.0.
+I will keep this promise both through the beta and after 1.0.
 
 Legacy code kills the pace of development, snowballs cruft, 
 and holds back the possibility of game-changing improvements.
@@ -66,3 +112,4 @@ new features.
 License
 =======
 MIT license
+
