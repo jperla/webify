@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 import types
+import logging
 
 from webob import Request, Response
 from webob import exc
@@ -7,7 +8,7 @@ from webob import exc
 from .. import templates
 from .. import defaults
 
-def __get_req(environ):
+def get_req(environ):
     req = Request(environ)
     if 'settings' not in req.environ or req.environ['settings'] == []:
         req.settings = {} 
@@ -17,7 +18,7 @@ def __get_req(environ):
 
 def raw_controller(func):
     def replacement(environ, start_response):
-        req = __get_req(environ)
+        req = get_req(environ)
         try:
             resp = func(req, **req.urlvars)
         except exc.HTTPException, e:
@@ -29,7 +30,7 @@ def raw_controller(func):
 
 def controller(func):
     def replacement(environ, start_response):
-        req = __get_req(environ)
+        req = get_req(environ)
         try:
             resp = func(req, **req.urlvars)
         except exc.HTTPException, e:
@@ -48,8 +49,9 @@ def recursively_iterate(g):
                 yield subitem
 
 def incremental_controller(func):
+    logging.warning('incremental_controller deprecated, please use IncrementalController')
     def replacement(environ, start_response):
-        req = __get_req(environ)
+        req = get_req(environ)
         try:
             resp_generator = func(req)
         except exc.HTTPException, e:
@@ -62,10 +64,30 @@ def incremental_controller(func):
     return replacement
 
 
+class IncrementalController(object):
+    def __init__(self, func):
+        self.func = func
+        self.args = list()
+
+    def append_args(self, *args):
+        self.args = args
+
+    def __call__(self, environ, start_response):
+        req = get_req(environ)
+        try:
+            resp_generator = self.func(req, *self.args)
+        except exc.HTTPException, e:
+            resp = e
+            return resp(environ, start_response)
+        else:
+            status, headers = defaults.status_and_headers
+            start_response(status, headers)
+            return recursively_iterate(resp_generator)
     
 def advanced_incremental_controller(func):
+    logging.warning('advanced_incremental_controller deprecated, please use AdvancedIncrementalController')
     def replacement(environ, start_response):
-        req = __get_req(environ)
+        req = get_req(environ)
         try:
             resp_generator = func(req)
         except exc.HTTPException, e:
@@ -76,4 +98,22 @@ def advanced_incremental_controller(func):
             start_response(status, headers)
             return recursively_iterate(resp_generator)
     return replacement
+
+class AdvancedIncrementalController(object):
+    def __init__(self, args=list()):
+        self.args = args
+
+    def __call__(self, func):
+        def replacement(environ, start_response):
+            req = get_req(environ)
+            try:
+                resp_generator = func(req, *self.args)
+            except exc.HTTPException, e:
+                resp = e
+                return resp(environ, start_response)
+            else:
+                status, headers = resp_generator.next()
+                start_response(status, headers)
+                return recursively_iterate(resp_generator)
+        return replacement
 
