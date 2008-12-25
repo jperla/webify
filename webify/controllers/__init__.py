@@ -7,9 +7,17 @@ from webob import exc
 from .. import templates
 from .. import defaults
 
+def __get_req(environ):
+    req = Request(environ)
+    if 'settings' not in req.environ or req.environ['settings'] == []:
+        req.settings = {} 
+    else:
+        req.settings = req.environ['settings'][0] 
+    return req
+
 def raw_controller(func):
     def replacement(environ, start_response):
-        req = Request(environ)
+        req = __get_req(environ)
         try:
             resp = func(req, **req.urlvars)
         except exc.HTTPException, e:
@@ -21,7 +29,7 @@ def raw_controller(func):
 
 def controller(func):
     def replacement(environ, start_response):
-        req = Request(environ)
+        req = __get_req(environ)
         try:
             resp = func(req, **req.urlvars)
         except exc.HTTPException, e:
@@ -41,7 +49,7 @@ def recursively_iterate(g):
 
 def incremental_controller(func):
     def replacement(environ, start_response):
-        req = Request(environ)
+        req = __get_req(environ)
         try:
             resp_generator = func(req)
         except exc.HTTPException, e:
@@ -57,7 +65,7 @@ def incremental_controller(func):
     
 def advanced_incremental_controller(func):
     def replacement(environ, start_response):
-        req = Request(environ)
+        req = __get_req(environ)
         try:
             resp_generator = func(req)
         except exc.HTTPException, e:
