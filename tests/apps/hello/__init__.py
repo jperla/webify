@@ -6,7 +6,6 @@ import webify
 # Controller
 import webify.defaults
 from webify.controllers import controller, advanced_incremental_controller
-from webify.templates import python_template
 
 @advanced_incremental_controller
 def hello(req):
