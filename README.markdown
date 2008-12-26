@@ -10,19 +10,20 @@ You have an awesome offline program.  Webify and deploy it in under _5_ minutes.
 
 Example: a complete Webify application
 ======================================
+
     import webify
 
-    @webify.incremental_controller
-    def hello(req):
-        path = req.path_info[1:]
-        name = path if path else 'world'
-        times = int(req.params.get('times', 1))
-        for i in xrange(times):
+    urls = webify.UrlWrapper()
+
+    @urls.wrap(url_args=webify.UrlWrapper.Arguments.Path())
+    def hello(req, name='world'):
+        times = req.params.get('times', '1')
+        for i in xrange(int(times)):
             yield 'Hello, %s!<br />' % name
 
-    if __name__ == '__main__':
-        webify.run(hello)
-      
+    if __name__ == '__main__': 
+        webify.run(urls.application())
+
 Try and load http://127.0.0.1:8080/world?times=100000
 
 Programming and Design Philosophy
@@ -46,31 +47,33 @@ Programming and Design Philosophy
 TODO
 ====
 Webify includes 
-* controllers
-* templates, subtemplates, and layouts
-* forms
-* middleware
-* a debugging and production server thread
-* smallest python app period
-* very extensible and easy to understand
+- controllers
+- templates, subtemplates, and layouts
+- URL dispatching and redirects
+- forms
+- middleware
+- a debugging and production server thread
+- smallest python app period
+- very extensible and easy to understand
 
 
 Webify still needs, in order,
-* Models and backend storage 
-* URL dispatching and redirects
-* Documentation, auto-generated from codebase, with auto-tests
-* Sessions and authentication
-* Email
-* Webapp testing framework with fixtures
-* Pluggable sub-webapps
-* Auto-admin (databrowse?)
-* Standard template filters
-* Synchronous and asynchronous signals and dispatchers
-* Cache system
-* Internationalization
-* CSRF protection
-* Sitemaps
-* RSS Feeds
+- Models and backend storage*
+- Documentation, auto-generated from codebase, with auto-tests
+- Sessions and authentication*
+- Email
+- Webapp testing framework with fixtures
+- Pluggable sub-webapps*
+- Auto-admin (databrowse?)*
+- Standard template filters
+- Synchronous and asynchronous signals and dispatchers*
+- Cache system*
+- Internationalization*
+- CSRF protection
+- Sitemaps
+- RSS Feeds
+
+*requires a hard design decision
 
 
 Webify will never have
