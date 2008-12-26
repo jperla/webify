@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 import webify
 
+#urls app
+urls = webify.UrlWrapper()
+
 # Controller
-@webify.incremental_controller
+@urls.wrap()
 def hello(req):
     context = {'name': req.params.get('name', 'world')}
     return hello_template(context, req)

@@ -5,11 +5,12 @@ import webify
 
 # Controller
 import webify.defaults
-from webify.controllers import controller, advanced_incremental_controller
+from webify.controllers import controller, AdvancedIncrementalController
 
-@advanced_incremental_controller
+urls = webify.UrlWrapper()
+
+@urls.wrap()
 def hello(req):
-    yield webify.defaults.status_and_headers
     yield '''<form method="POST">'''
     name = req.params.get('name', None)
     if name is None:
@@ -20,9 +21,7 @@ def hello(req):
     yield '''<input type="submit">'''
     yield '''</form>'''
 
-# Urls
-from webify.urls.dispatchers import NoURLDispatcher
-app = NoURLDispatcher(hello)
+app = urls.application()
 
 # Middleware
 from webify.middleware import install_middleware, EvalException
