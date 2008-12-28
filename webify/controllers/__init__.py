@@ -47,18 +47,24 @@ def recursively_iterate(g):
             for subitem in recursively_iterate(item):
                 yield subitem
 
-class IncrementalController(object):
+class Controller(object):
     def __init__(self, func):
         self.func = func
         self.args = list()
+        self.kwargs = {}
 
-    def append_args(self, *args):
+    def append_args(self, args, kwargs):
         self.args = args
+        self.kwargs = kwargs
 
+    def __call__(self, environ, start_response):
+        pass
+
+class IncrementalController(Controller):
     def __call__(self, environ, start_response):
         req = get_req(environ)
         try:
-            resp_generator = self.func(req, *self.args)
+            resp_generator = self.func(req, *self.args, **self.kwargs)
         except exc.HTTPException, e:
             resp = e
             return resp(environ, start_response)
@@ -68,18 +74,11 @@ class IncrementalController(object):
             return recursively_iterate(resp_generator)
     
 
-class AdvancedIncrementalController(object):
-    def __init__(self, func):
-        self.func = func
-        self.args = list()
-
-    def append_args(self, *args):
-        self.args = args
-
+class AdvancedIncrementalController(Controller):
     def __call__(self, environ, start_response):
         req = get_req(environ)
         try:
-            resp_generator = self.func(req, *self.args)
+            resp_generator = self.func(req, *self.args, **self.kwargs)
         except exc.HTTPException, e:
             resp = e
             return resp(environ, start_response)
