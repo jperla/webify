@@ -5,8 +5,7 @@ import logging
 from webob import Request, Response
 from webob import exc
 
-from .. import templates
-from .. import defaults
+from .. import http as _http
 
 def get_req(environ):
     req = Request(environ)
@@ -64,7 +63,7 @@ class IncrementalController(object):
             resp = e
             return resp(environ, start_response)
         else:
-            status, headers = defaults.status_and_headers
+            status, headers = _http.defaults.status_and_headers
             start_response(status, headers)
             return recursively_iterate(resp_generator)
     

@@ -3,13 +3,10 @@ import time
 
 import webify
 
+app = webify.Application()
+
 # Controller
-import webify.defaults
-from webify.controllers import controller, AdvancedIncrementalController
-
-urls = webify.UrlWrapper()
-
-@urls.wrap()
+@app.controller()
 def hello(req):
     yield '''<form method="POST">'''
     name = req.params.get('name', None)
@@ -20,8 +17,6 @@ def hello(req):
     yield '''Your name: <input type="text" name="name">'''
     yield '''<input type="submit">'''
     yield '''</form>'''
-
-app = urls.application()
 
 # Middleware
 from webify.middleware import install_middleware, EvalException

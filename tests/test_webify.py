@@ -8,7 +8,7 @@ from .apps import hello
 
 def test_simplest():
     req = Request.blank('http://localhost/hello/world?times=3')
-    resp = req.get_response(simplest.urls)
+    resp = req.get_response(simplest.app)
     assert '200' in str(resp)
     assert 'world' in str(resp)
     assert 'Hello, world!' in str(resp)

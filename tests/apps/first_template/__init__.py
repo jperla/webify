@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 import webify
 
-#urls app
-urls = webify.UrlWrapper()
+app = webify.Application()
 
-# Controller
-@urls.wrap()
+# Controllers
+@app.controller()
 def hello(req):
     context = {'name': req.params.get('name', 'world')}
     return hello_template(context, req)
@@ -19,9 +18,6 @@ def hello_template(context, req):
     yield '''<input type="submit">'''
     yield '''</form>'''
 
-# Urls
-from webify.urls.dispatchers import NoURLDispatcher
-app = NoURLDispatcher(hello)
 
 # Middleware
 from webify.middleware import install_middleware, EvalException

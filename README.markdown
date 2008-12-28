@@ -59,6 +59,7 @@ Webify includes
 
 Webify still needs, in order,
 - Models and backend storage*
+- Error handling framework
 - Documentation, auto-generated from codebase, with auto-tests
 - Sessions and authentication*
 - Email
