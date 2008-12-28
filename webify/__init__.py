@@ -11,7 +11,7 @@ def run(app):
 
 class Application(object):
     def __init__(self,
-                 dispatcher=urls.parsers.SlashDispatcher,
+                 dispatcher=urls.dispatchers.SlashDispatcher,
                  default_controller=defaults.controller):
         self.dispatcher = dispatcher(default_controller)
 

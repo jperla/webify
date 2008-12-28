@@ -8,6 +8,6 @@ from ..http.defaults import status, content_type, headers, status_and_headers
 host = '127.0.0.1'
 port = '8080'
 
-dispatcher = __dispatchers.Shifter
+dispatcher = __dispatchers.SlashDispatcher
 controller = __controllers.IncrementalController
 
