@@ -1,15 +1,67 @@
-class UrlizedController(object):
-    def __init__(self, controller, url_parser):
-        self.controller = controller
-        self.url_parser = url_parser
-    
-    def url(self, *args, **kwargs):
-        return self.url_parser.url(*args, **kwargs)
+from __future__ import absolute_import
 
-    def __call__(self, environ, start_response):
-        args, kwargs = self.url_parser.parse(environ)
-        self.controller.append_args(args, kwargs)
-        return self.controller(environ, start_response)
+from ...controllers import UrlizedController
+
+class Mapper(object):
+    def __init__(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def map(self, f, controller):
+        raise NotImplementedError
+
+class KeyedMapper(Mapper):
+    def key(self, f):
+        raise NotImplementedError
+
+class SimpleMapper(KeyedMapper):
+    def __init__(self, path=None):
+        self.__path = path
+
+    def path(self, f):
+        return '/%s/' % f.func_name if self.__path is None else self.__path
+
+    def map(self, f, controller):
+        p = SimpleParser(self.path(f))
+        c = controller(f)
+        urlized = UrlizedController(c, p)
+        return urlized 
+
+    def key(self, f):
+        return self.path(f).strip('/')
+
+        
+class RemainingMapper(object):
+    def __init__(self, path=None):
+        self.__path = path
+
+    def path(self, f):
+        return '/%s/' % f.func_name if self.__path is None else self.__path
+
+    def map(self, f, controller):
+        p = RemainingParser(self.path(f))
+        c = controller(f)
+        urlized = UrlizedController(c, p)
+        return urlized 
+
+    def key(self, f):
+        return self.path(f).strip('/')
+
+
+
+
+class SimpleParser(object):
+    def __init__(self, path='/'):
+        self.path = path
+
+    def url(self, remaining):
+        return self.path
+        
+    def parse(self, environ):
+        path = environ['PATH_INFO']
+        assert(path.startswith(self.path))
+        args = []
+        kwargs = {}
+        return (args, kwargs)
         
 class RemainingParser(object):
     def __init__(self, prefix='/'):

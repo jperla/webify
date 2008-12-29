@@ -25,4 +25,9 @@ def test_hello():
     assert '500' not in str(hello_resp)
     assert 'Error' not in str(hello_resp)
 
+def test_redirect():
+    hello_req = Request.blank('http://localhost/hello_old/')
+    hello_resp = hello_req.get_response(hello.app)
+    assert '302' in str(hello_resp)
+    assert '/hello/' in str(hello_resp)
 

@@ -18,6 +18,13 @@ def hello(req):
     yield '''<input type="submit">'''
     yield '''</form>'''
 
+import webob
+
+# Controller
+@app.controller()
+def hello_old(req):
+    raise webify.http.status.redirect(hello, '')
+
 # Middleware
 from webify.middleware import install_middleware, EvalException
 wrapped_app = install_middleware(app, [

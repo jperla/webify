@@ -87,3 +87,16 @@ class AdvancedIncrementalController(Controller):
             start_response(status, headers)
             return recursively_iterate(resp_generator)
 
+class UrlizedController(object):
+    def __init__(self, controller, url_parser):
+        self.controller = controller
+        self.url_parser = url_parser
+    
+    def url(self, *args, **kwargs):
+        return self.url_parser.url(*args, **kwargs)
+
+    def __call__(self, environ, start_response):
+        args, kwargs = self.url_parser.parse(environ)
+        self.controller.append_args(args, kwargs)
+        return self.controller(environ, start_response)
+
