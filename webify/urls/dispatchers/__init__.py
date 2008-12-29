@@ -40,3 +40,25 @@ class SimpleDispatcher(object):
         else:
             raise http.status.not_found()
 
+class SingleDispatcher(object):
+    def __init__(self):
+        self.controller = None
+
+    def urlize(self):
+        def decorator(controller):
+            assert(controller is not None)
+            self.controller = controller
+            return controller
+        return decorator
+
+    def url(self, controller, controller_url):
+        assert(controller == self.controller)
+        return '/%s' % controller_url
+
+    def __call__(self, environ, start_response):
+        app = self.controller
+        if app is not None:
+            return app(environ, start_response)
+        else:
+            raise http.status.not_found()
+

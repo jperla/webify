@@ -11,19 +11,21 @@ You have an awesome offline program.  Webify and deploy it in under _5_ minutes.
 Example: a complete Webify application
 ======================================
 
-    import webify
+import webify
 
-    app = webify.Application()
-    @app.simple_controller(mapper=webify.urls.mappers.RemainingMapper)
-    def hello(req, name='world'):
-        times = req.params.get('times', '1')
-        for i in xrange(int(times)):
-            yield 'Hello, %s!<br />' % name
+app = webify.App(dispatcher=webify.urls.dispatchers.SingleDispatcher)
 
-        if __name__ == '__main__':
-            webify.run(app)
+@app.controller()
+@app.simple_args(name=webify.controllers.arguments.RemainingArgParser())
+def hello(req, name='world'):
+    times = req.params.get('times', '1')
+    for i in xrange(int(times)):
+        yield 'Hello, %s!<br />' % name
 
-     # Try Loading http://127.0.0.1:8080/hello/world?times=1000000
+if __name__ == '__main__':
+    webify.run(app)
+
+# Try Loading http://127.0.0.1:8080/hello/world?times=1000000
 
 
 Programming and Design Philosophy

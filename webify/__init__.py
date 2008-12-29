@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 from . import defaults
 
-from .controllers import controller, IncrementalController
+from . import controllers
 from . import urls
 from . import http
 from . import templates
@@ -21,6 +21,14 @@ class App(object):
         def decorator(c):
             c.app = self
             return urlized(c)
+        return decorator
+
+    def simple_args(self, *args, **kwargs):
+        def decorator(f):
+            controller = controllers.IncrementalController(f)
+            argumented = controllers.arguments.Arguments(*args,
+                                                         **kwargs)(controller)
+            return argumented
         return decorator
 
     def url(self, controller, controller_url):
