@@ -1,10 +1,11 @@
 from __future__ import absolute_import
-# Shortcuts for simplest
+
 from . import defaults
 
 from .controllers import controller, IncrementalController
 from . import urls
 from . import http
+from . import templates
 
 def run(app):
     http.server.serve(app, host=defaults.host, port=defaults.port)
