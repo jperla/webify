@@ -59,7 +59,7 @@ class SlashDispatcher(object):
         name = environ['PATH_INFO'].split('/')[1]
         if name is None:
             name = ''
-        app = self.apps.get(name, None)
+        app = self.apps.get(name)
         if app is not None:
             return app(environ, start_response)
         else:

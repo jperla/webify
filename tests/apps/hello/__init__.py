@@ -5,22 +5,23 @@ import webify
 
 app = webify.Application()
 
-# Controller
+# Controllers
+@app.simple_controller(path='')
+def index(req):
+    yield 'Hello, world!'
+
 @app.controller()
 def hello(req):
-    yield '''<form method="POST">'''
+    yield '<form method="POST">'
     name = req.params.get('name', None)
     if name is None:
-        yield '''Hello, world! <br />'''
+        yield 'Hello, world! <br />'
     else:
-        yield '''Hello, %(name)s! <br />''' % {'name': name}
-    yield '''Your name: <input type="text" name="name">'''
-    yield '''<input type="submit">'''
-    yield '''</form>'''
+        yield 'Hello, %(name)s! <br />' % {'name': name}
+    yield 'Your name: <input type="text" name="name">'
+    yield '<input type="submit">'
+    yield '</form>'
 
-import webob
-
-# Controller
 @app.controller()
 def hello_old(req):
     raise webify.http.status.redirect(hello.url())

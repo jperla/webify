@@ -15,6 +15,10 @@ def test_url():
     url = hello.hello.url()
     assert url == '/hello/'
     
+def test_index():
+    with get(hello.app, '/') as (status, body):
+        assert '200' in status
+        assert 'Hello, world!' in body
 
 def test_simplest():
     with get(simplest.app, '/hello/world?times=3') as (status, body):
