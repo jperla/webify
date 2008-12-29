@@ -61,3 +61,7 @@ def test_time_diff():
     assert '4' not in diff
     assert 'hours' not in diff
 
+def test_url_generation():
+    url = simplest.hello.url('joe')
+    assert url == '/hello/joe'
+

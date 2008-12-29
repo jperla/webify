@@ -40,9 +40,10 @@ class IncrementalController(ControllerWithArguments):
     def __call__(self, environ, start_response):
         req = get_req(environ)
         if self.arg_parsers != ([], {}):
-            self.args = [a.parse(req) for a in self.arg_parsers[0]]
-            for k in self.arg_parsers[1]:
-                kwarg = self.arg_parsers[1][k].parse(req)
+            arg_parsers, kwarg_parsers = self.arg_parsers
+            self.args = [a.parse(req) for a in arg_parsers]
+            for k in kwarg_parsers:
+                kwarg = kwarg_parsers[k].parse(req)
                 if kwarg is not arguments.NoArgument:
                     self.kwargs[k] = kwarg
         try:
@@ -64,7 +65,10 @@ class IncrementalController(ControllerWithArguments):
         Finds first arg parser, asks it for the url it knows,
         and then passes this off to the app to do what it needs to do.
         '''
-        for parser in self.arg_parsers:
+        arg_parsers, kwarg_parsers = self.arg_parsers
+        parsers = list(arg_parsers)
+        parsers.extend(kwarg_parsers.values())
+        for parser in parsers:
             if isinstance(parser, arguments.UrlArgParser):
                 url = parser.url(*args, **kwargs)
                 return self.app.url(self, url)

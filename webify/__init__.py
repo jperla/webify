@@ -17,19 +17,19 @@ class App(object):
         self.dispatcher = dispatcher()
 
     def controller(self, *args, **kwargs):
-        urlized = self.dispatcher.urlize(*args, **kwargs)
+        register_url = self.dispatcher.urlize(*args, **kwargs)
         def decorator(c):
             if not isinstance(c, controllers.Controller):
                 c = controllers.IncrementalController(c)
             c.app = self
-            return urlized(c)
+            registered = register_url(c)
+            return registered
         return decorator
 
     def simple_args(self, *args, **kwargs):
         def decorator(f):
             controller = controllers.IncrementalController(f)
-            argumented = controllers.arguments.Arguments(*args,
-                                                         **kwargs)(controller)
+            argumented = controllers.arguments.Arguments(*args, **kwargs)(controller)
             return argumented
         return decorator
 
