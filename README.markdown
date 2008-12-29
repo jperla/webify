@@ -55,18 +55,19 @@ Webify includes
 - a debugging and production server thread
 - smallest python app period
 - very extensible and easy to understand
+- Error handling framework
+- Webapp testing framework
+- Standard template filters
 
 
 Webify still needs, in order,
 - Models and backend storage*
-- Error handling framework
 - Documentation, auto-generated from codebase, with auto-tests
 - Sessions and authentication*
 - Email
-- Webapp testing framework with fixtures
+- Testing framework fixtures
 - Pluggable sub-webapps*
 - Auto-admin (databrowse?)*
-- Standard template filters
 - Synchronous and asynchronous signals and dispatchers*
 - Cache system*
 - Internationalization*
