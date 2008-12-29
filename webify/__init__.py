@@ -19,6 +19,8 @@ class App(object):
     def controller(self, *args, **kwargs):
         urlized = self.dispatcher.urlize(*args, **kwargs)
         def decorator(c):
+            if not isinstance(c, controllers.Controller):
+                c = controllers.IncrementalController(c)
             c.app = self
             return urlized(c)
         return decorator

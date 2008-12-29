@@ -5,7 +5,6 @@ app = webify.App()
 
 # Controllers
 @app.controller()
-@webify.controllers.IncrementalController
 def hello(req):
     context = {'name': req.params.get('name', 'world')}
     return hello_template(context, req)

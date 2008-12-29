@@ -8,7 +8,14 @@ from webob import exc
 from . import arguments
 from .. import http as _http
 
-class ControllerWithArguments(object):
+class Controller(object):
+    def __init__(self, func):
+        raise NotImplementedError
+
+    def __call__(self, environ, start_response):
+        raise NotImplementedError
+
+class ControllerWithArguments(Controller):
     def __init__(self, func):
         self.func = func
         self.args = list()
