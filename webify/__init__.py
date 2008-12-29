@@ -6,6 +6,7 @@ from .controllers import controller, IncrementalController
 from . import urls
 from . import http
 from . import templates
+from . import tests
 
 def run(app):
     http.server.serve(app, host=defaults.host, port=defaults.port)
