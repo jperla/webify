@@ -48,7 +48,7 @@ TODO
 ====
 Webify includes 
 - controllers
-- templates, subtemplates, and layouts
+- templates and helpers
 - URL dispatching and redirects
 - forms
 - middleware
@@ -62,11 +62,12 @@ Webify includes
 
 Webify still needs, in order,
 - Models and backend storage*
+- Layout system for templates
+- Pluggable sub-webapps*
 - Documentation, auto-generated from codebase, with auto-tests
 - Sessions and authentication*
 - Email
 - Testing framework fixtures
-- Pluggable sub-webapps*
 - Auto-admin (databrowse?)*
 - Synchronous and asynchronous signals and dispatchers*
 - Cache system*
