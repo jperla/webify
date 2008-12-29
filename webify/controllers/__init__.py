@@ -52,17 +52,83 @@ class ControllerWithArguments(object):
         self.func = func
         self.args = list()
         self.kwargs = {}
+        self.arg_parsers = (list(), {})
+
+    def arg_parsers(self, *args, **kwargs):
+        self.arg_parsers = (args, kwargs)
 
     def append_args(self, args, kwargs):
         self.args = args
         self.kwargs = kwargs
 
+    def url(self, *args, **kwargs):
+        raise NotImplementedError
+
     def __call__(self, environ, start_response):
+        raise NotImplementedError
+
+NoArgument = object()
+
+class ArgParser(object):
+    def __init__(self):
+        raise NotImplementedError
+
+    def parse(self, req):
+        '''
+        Returns arg or kwarg to append to controller call
+        '''
+        raise NotImplementedError
+
+class ArgParserWithDefault(ArgParser):
+    def __init__(self, default):
+        '''
+        Init takes a default argument
+        '''
+        raise NotImplementedError
+
+
+
+class UrlArgParser(ArgParser):
+    def __init__(self):
+        raise NotImplementedError
+
+    def url(self, *args, **kwargs):
+        raise NotImplementedError
+
+class RemainingArgParser(UrlArgParser):
+    def __init__(self):
         pass
+
+    def parse(self, req):
+        remaining = req.path_info[1:]
+        if remaining != '':
+            return remaining
+        else:
+            return NoArgument
+
+    def url(self, remaining):
+        return '/%s' % remaining
+
+class Arguments():
+    def __init__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
+
+    def __call__(self, controller):
+        def add_args_to_controller(environ, start_response):
+            controller.arg_parsers = (self.args, self.kwargs)
+            return controller(environ, start_response)
+        return add_args_to_controller
 
 class IncrementalController(ControllerWithArguments):
     def __call__(self, environ, start_response):
         req = get_req(environ)
+        if self.arg_parsers != ([], {}):
+            self.args = [a.parse(req) for a in self.arg_parsers[0]]
+            for k in self.arg_parsers[1]:
+                kwarg = self.arg_parsers[1][k].parse(req)
+                if kwarg is not NoArgument:
+                    self.kwargs[k] = kwarg
         try:
             resp_generator = self.func(req, *self.args, **self.kwargs)
         except exc.HTTPException, e:
@@ -76,6 +142,14 @@ class IncrementalController(ControllerWithArguments):
                 return recursively_iterate([first_yield, resp_generator])
             else:
                 return first_yield(environ, start_response)
+
+    def url(self, *args, **kwargs):
+        for parser in self.arg_parsers:
+            if isinstance(parser, UrlArgParser):
+                url = parser.url(*args, **kwargs)
+                return self.app.url(self, url)
+        return self.app.url(self, '/')
+        
 
 class AdvancedIncrementalController(ControllerWithArguments):
     def __call__(self, environ, start_response):

@@ -3,14 +3,16 @@ import time
 
 import webify
 
-app = webify.Application()
+app = webify.App()
 
 # Controllers
-@app.simple_controller(path='')
+@app.controller(path='/')
+@webify.controllers.IncrementalController
 def index(req):
     yield 'Hello, world!'
 
 @app.controller()
+@webify.controllers.IncrementalController
 def hello(req):
     yield '<form method="POST">'
     name = req.params.get('name', None)
@@ -23,6 +25,7 @@ def hello(req):
     yield '</form>'
 
 @app.controller()
+@webify.controllers.IncrementalController
 def hello_old(req):
     yield webify.http.status.redirect(hello.url())
 

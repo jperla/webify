@@ -1,6 +1,6 @@
 Webify
 ======
-The lazy programmer's web framework.
+The lazy man's web framework.
 
 
 Purpose

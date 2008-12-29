@@ -1,7 +1,10 @@
 import webify
 
-app = webify.Application()
-@app.simple_controller(mapper=webify.urls.mappers.RemainingMapper)
+app = webify.App()
+
+@app.controller(path='/hello')
+@webify.controllers.Arguments(name=webify.controllers.RemainingArgParser())
+@webify.controllers.IncrementalController
 def hello(req, name='world'):
     times = req.params.get('times', '1')
     for i in xrange(int(times)):
