@@ -6,6 +6,11 @@ from webob import Request, Response
 from .apps import simplest
 from .apps import hello
 
+def test_url():
+    url = hello.hello.url()
+    assert url == '/hello/'
+    
+
 def test_simplest():
     req = Request.blank('http://localhost/hello/world?times=3')
     resp = req.get_response(simplest.app)
@@ -15,6 +20,8 @@ def test_simplest():
     assert len(re.findall('world', str(resp))) == 3
     assert 'Hello, world!' in str(resp)
 
+
+'''
 def test_hello():
     hello_req = Request.blank('http://localhost/hello/')
     hello_resp = hello_req.get_response(hello.app)
@@ -31,3 +38,16 @@ def test_redirect():
     assert '302' in str(hello_resp)
     assert '/hello/' in str(hello_resp)
 
+'''
+
+'''
+def test_remaining_mapper():
+    req = Request.blank('http://localhost/hello/joe?times=3')
+    resp = req.get_response(simplest.app)
+    assert '200' in str(resp)
+    assert 'joe' in str(resp)
+    assert 'Hello, joe!' in str(resp)
+    assert len(re.findall('joe', str(resp))) == 3
+    assert 'Hello, joe!' in str(resp)
+
+'''

@@ -13,18 +13,18 @@ Example: a complete Webify application
 
     import webify
 
-    urls = webify.UrlWrapper()
-
-    @urls.wrap(url_args=webify.UrlWrapper.Arguments.Path())
+    app = webify.Application()
+    @app.simple_controller(mapper=webify.urls.mappers.RemainingMapper)
     def hello(req, name='world'):
         times = req.params.get('times', '1')
         for i in xrange(int(times)):
             yield 'Hello, %s!<br />' % name
 
-    if __name__ == '__main__': 
-        webify.run(urls.application())
+        if __name__ == '__main__':
+            webify.run(app)
 
-Try and load http://127.0.0.1:8080/world?times=100000
+     # Try Loading http://127.0.0.1:8080/hello/world?times=1000000
+
 
 Programming and Design Philosophy
 =================================

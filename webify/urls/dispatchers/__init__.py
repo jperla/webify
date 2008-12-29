@@ -6,6 +6,7 @@ import webob
 
 from webob import exc, Request, Response
 from .. import mappers
+from ... import http
 
 
 # potential problem: url parser and url dispatchers could conflict
@@ -34,32 +35,33 @@ def Single(object):
 
 
 class SlashDispatcher(object):
-    def __init__(self, default_controller):
-        self.urls = {}
+    def __init__(self, default_controller, default_mapper):
+        self.apps = {}
         self.default_controller = default_controller
+        self.default_mapper = default_mapper
 
-    def urlize(self, controller=None, mapper=mappers.RemainingMapper()):
+    def urlize(self, controller=None, mapper=None):
+        mapper = self.default_mapper if mapper is None else mapper
+        assert(isinstance(mapper, mappers.HashMapper),
+                'Slash Dispatcher uses a hash mapping system')
         def decorator(f):
             assert(f is not None)
             c = self.default_controller if controller is None else controller
             assert(c is not None)
-            urlized = mapper.map(f, c)
+            urlized_controller = mapper.map(f, c)
+            assert(urlized_controller is not None)
             key = mapper.key(f)
-            assert(urlized is not None)
-            self.urls[key] = (mapper, urlized)
-            return urlized 
+            self.apps[key] = urlized_controller
+            return urlized_controller
         return decorator
 
     def __call__(self, environ, start_response):
         name = environ['PATH_INFO'].split('/')[1]
         if name is None:
             name = ''
-        mapper, app = self.urls.get(name, (None, None))
-        if app is None:
-            raise
-            res = webob.Response()
-            res.status = 404
-            return res(environ, start_response)
-        else:
+        app = self.apps.get(name, None)
+        if app is not None:
             return app(environ, start_response)
+        else:
+            raise http.status.not_found()
 

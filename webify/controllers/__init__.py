@@ -47,7 +47,7 @@ def recursively_iterate(g):
             for subitem in recursively_iterate(item):
                 yield subitem
 
-class Controller(object):
+class ControllerWithArguments(object):
     def __init__(self, func):
         self.func = func
         self.args = list()
@@ -60,7 +60,7 @@ class Controller(object):
     def __call__(self, environ, start_response):
         pass
 
-class IncrementalController(Controller):
+class IncrementalController(ControllerWithArguments):
     def __call__(self, environ, start_response):
         req = get_req(environ)
         try:
@@ -74,7 +74,7 @@ class IncrementalController(Controller):
             return recursively_iterate(resp_generator)
     
 
-class AdvancedIncrementalController(Controller):
+class AdvancedIncrementalController(ControllerWithArguments):
     def __call__(self, environ, start_response):
         req = get_req(environ)
         try:

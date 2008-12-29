@@ -23,7 +23,7 @@ import webob
 # Controller
 @app.controller()
 def hello_old(req):
-    raise webify.http.status.redirect(hello, '')
+    raise webify.http.status.redirect(hello.url())
 
 # Middleware
 from webify.middleware import install_middleware, EvalException
