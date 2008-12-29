@@ -24,7 +24,7 @@ def hello(req):
 
 @app.controller()
 def hello_old(req):
-    raise webify.http.status.redirect(hello.url())
+    yield webify.http.status.redirect(hello.url())
 
 # Middleware
 from webify.middleware import install_middleware, EvalException

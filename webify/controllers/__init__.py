@@ -41,7 +41,7 @@ def controller(func):
 
 def recursively_iterate(g):
     for item in g:
-        if not isinstance(item, types.GeneratorType):
+        if not hasattr(item, '__iter__'):
             yield item
         else:
             for subitem in recursively_iterate(item):
@@ -70,9 +70,12 @@ class IncrementalController(ControllerWithArguments):
             return resp(environ, start_response)
         else:
             status, headers = _http.defaults.status_and_headers
-            start_response(status, headers)
-            return recursively_iterate(resp_generator)
-    
+            first_yield = resp_generator.next()
+            if not isinstance(first_yield, exc.HTTPException):
+                start_response(status, headers)
+                return recursively_iterate([first_yield, resp_generator])
+            else:
+                return first_yield(environ, start_response)
 
 class AdvancedIncrementalController(ControllerWithArguments):
     def __call__(self, environ, start_response):
@@ -83,9 +86,13 @@ class AdvancedIncrementalController(ControllerWithArguments):
             resp = e
             return resp(environ, start_response)
         else:
-            status, headers = resp_generator.next()
-            start_response(status, headers)
-            return recursively_iterate(resp_generator)
+            first_yield = resp_generator.next()
+            if not isinstance(first_yield, exc.HTTPException):
+                status, headers = first_yield
+                start_response(status, headers)
+                return recursively_iterate([first_yield, resp_generator])
+            else:
+                return first_yield(environ, start_response)
 
 class UrlizedController(object):
     def __init__(self, controller, url_parser):
