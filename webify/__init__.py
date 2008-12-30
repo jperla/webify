@@ -15,6 +15,7 @@ def run(app):
 class App(object):
     def __init__(self, dispatcher=urls.dispatchers.SimpleDispatcher):
         self.dispatcher = dispatcher()
+        self.app = None
 
     def controller(self, *args, **kwargs):
         register_url = self.dispatcher.urlize(*args, **kwargs)
@@ -33,8 +34,22 @@ class App(object):
             return argumented
         return decorator
 
+    def subapp(self, *args, **kwargs):
+        register_url = self.dispatcher.urlize(*args, **kwargs)
+        def decorator(c):
+            if not isinstance(c, controllers.Controller):
+                c = controllers.IncrementalController(c)
+            c.app = self
+            registered = register_url(c)
+            return registered
+        return decorator
+
     def url(self, controller, controller_url):
-        return self.dispatcher.url(controller, controller_url)
+        dispatcher_url = self.dispatcher.url(controller, controller_url)
+        if self.app is None:
+            return dispatcher_url
+        else:
+            return self.app.url(dispatcher_url)
 
     def __call__(self, environment, response):
         return self.dispatcher(environment, response)
