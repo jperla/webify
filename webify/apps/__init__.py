@@ -5,6 +5,8 @@ import logging
 from webob import Request, Response
 from webob import exc
 
+from . import standard
+
 from ..urls import defaults
 from ..controllers import arguments
 from .. import http as _http
