@@ -27,7 +27,6 @@ def test_simplest():
         assert 'Hello, world!' in body
         assert len(re.findall('world', body)) == 3
 
-
 def test_hello():
     with get(simplest.app, '/hello/') as (status, body):
         assert '200' in status

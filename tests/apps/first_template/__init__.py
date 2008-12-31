@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import webify
 
-app = webify.App()
+app = webify.defaults.app()
+
 
 # Controllers
 @app.controller()

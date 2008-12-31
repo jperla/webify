@@ -1,12 +1,12 @@
 from __future__ import absolute_import
 
-from . import defaults
-
+from . import apps
 from . import controllers
-from . import urls
+from . import defaults
 from . import http
 from . import templates
 from . import tests
+from . import urls
 
 def run(app):
     http.server.serve(app, host=defaults.host, port=defaults.port)

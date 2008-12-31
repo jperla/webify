@@ -1,9 +1,7 @@
 import webify
 
-app = webify.App()
-
-@app.controller()
-@app.simple_args(name=webify.controllers.arguments.RemainingArgParser())
+app = webify.defaults.app()
+@app.controller(args=[webify.controllers.arguments.RemainingUrlArgParser()])
 def hello(req, name='world'):
     times = req.params.get('times', '1')
     for i in xrange(int(times)):

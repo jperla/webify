@@ -9,20 +9,14 @@ from ... import http
 from ... import controllers
 
 
-
 class SimpleDispatcher(object):
     def __init__(self):
-        self.apps = {}
-        self.urls = {}
+        self.apps, self.urls = {}, {}
 
-    def urlize(self, path=None):
-        def decorator(controller):
-            assert(controller is not None)
-            name = ('/%s' % controller.func.func_name) if path is None else path
-            self.apps[name] = controller
-            self.urls[controller] = name
-            return controller
-        return decorator
+    def register(self, subapp, path=None):
+        name = ('/%s' % subapp.func.func_name) if path is None else path
+        self.apps[name] = subapp
+        self.urls[subapp] = name
 
     def url(self, controller, controller_url):
         assert(controller in self.urls)
@@ -40,6 +34,7 @@ class SimpleDispatcher(object):
         else:
             raise http.status.not_found()
 
+#TODO: jperla: broke this
 class SingleDispatcher(object):
     def __init__(self):
         self.controller = None

@@ -38,12 +38,31 @@ class RemainingArgParser(UrlArgParser):
     def url(self, remaining):
         return '/%s' % remaining
 
+
 class Arguments():
-    def __init__(self, *args, **kwargs):
-        self.args = args
-        self.kwargs = kwargs
+    def __init__(self, *args):
+        self.arg_parsers = args
 
     def __call__(self, controller):
-        controller.arg_parsers = (self.args, self.kwargs)
+        controller.arg_parsers = self.arg_parsers
         return controller
+
+
+class RemainingUrlArgParser(UrlArgParser):
+    def __init__(self, **kwargs):
+        self.defaults = kwargs
+        assert(len(self.defaults) <= 1)
+
+    def parse(self, req):
+        remaining = req.path_info[1:]
+        args, kwargs = [], self.defaults
+        if remaining != '':
+            if len(self.defaults) == 1:
+                kwargs[self.defaults.keys()[0]] = remaining
+            else:
+                args, kwargs = [remaining], {}
+        return args, kwargs
+
+    def url(self, remaining):
+        return '/%s' % remaining
 

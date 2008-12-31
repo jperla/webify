@@ -3,7 +3,7 @@ import time
 
 import webify
 
-app = webify.App()
+app = webify.defaults.app()
 
 # Controllers
 @app.controller(path='/')
