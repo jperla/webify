@@ -1,14 +1,9 @@
+from __future__ import absolute_import
+
+from ...urls import dispatchers
+from ... import ArgParser, Controller, UrlArgParser
+
 NoArgument = object()
-
-class ArgParser(object):
-    def __init__(self):
-        raise NotImplementedError
-
-    def parse(self, req):
-        '''
-        Returns arg or kwarg to append to controller call
-        '''
-        raise NotImplementedError
 
 class ArgParserWithDefault(ArgParser):
     def __init__(self, default):
@@ -17,38 +12,27 @@ class ArgParserWithDefault(ArgParser):
         '''
         raise NotImplementedError
 
-class UrlArgParser(ArgParser):
-    def __init__(self):
-        raise NotImplementedError
 
-    def url(self, *args, **kwargs):
-        raise NotImplementedError
-
-class RemainingArgParser(UrlArgParser):
-    def __init__(self):
-        pass
-
-    def parse(self, req):
-        remaining = req.path_info[1:]
-        if remaining != '':
-            return remaining
-        else:
-            return NoArgument
-
-    def url(self, remaining):
-        return '/%s' % remaining
-
-
-class Arguments():
+class Arguments(object):
     def __init__(self, *args):
         self.arg_parsers = args
 
     def __call__(self, controller):
-        controller.arg_parsers = self.arg_parsers
+        if not isinstance(controller, Controller):
+            controller = Controller(c)
+        controller.arg_parsers.extend(self.arg_parsers)
         return controller
 
+class add(object):
+    def __init__(self, arg_parser):
+        self.arg_parser = arg_parser
 
-class RemainingUrlArgParser(UrlArgParser):
+    def __call__(self, f):
+        controller = f if isinstance(f, Controller) else Controller(f)
+        controller.arg_parsers.append(self.arg_parser)
+        return controller
+
+class RemainingUrl(UrlArgParser):
     def __init__(self, **kwargs):
         self.defaults = kwargs
         assert(len(self.defaults) <= 1)

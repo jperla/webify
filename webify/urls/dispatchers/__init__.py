@@ -2,11 +2,7 @@ from __future__ import absolute_import
 import wsgiref
 import wsgiref.util
 
-import webob
-
-from webob import exc, Request, Response
 from ... import http
-from ... import controllers
 
 
 class SimpleDispatcher(object):

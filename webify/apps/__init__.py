@@ -8,78 +8,8 @@ from webob import exc
 from ..urls import defaults
 from ..controllers import arguments
 from .. import http as _http
+from .. import Controller, CallableApp
 
-        
-def get_req(environ):
-    req = Request(environ)
-    if 'settings' not in req.environ or req.environ['settings'] == []:
-        req.settings = {} 
-    else:
-        req.settings = req.environ['settings'][0] 
-    return req
-
-
-def recursively_iterate(g):
-    for item in g:
-        if not hasattr(item, '__iter__'):
-            yield item
-        else:
-            for subitem in recursively_iterate(item):
-                yield subitem
-
-def Url(object):
-    def __init__(self, url):
-        self.url = url
-
-    def __str__(self):
-        return self.url
-
-    def __repr__(self):
-        return self.url
-
-class CallableApp(object):
-    def __init__(self, func):
-        raise NotImplementedError
-
-    def __call__(self, environ, start_response):
-        raise NotImplementedError
-
-class Controller(CallableApp):
-    def __init__(self, func):
-        self.func = func
-        self.arg_parsers = []
-
-    def url(self, *args, **kwargs):
-        url_arg_parser = None
-        for parser in self.arg_parsers:
-            if isinstance(parser, arguments.UrlArgParser):
-                url_arg_parser = parser
-                break
-        if url_arg_parser is None:
-            return '/'
-        else:
-            return url_arg_parser.url(*args, **kwargs)
-    
-    def __call__(self, environ, start_response):
-        req = get_req(environ)
-        args, kwargs = [], {}
-        for parser in self.arg_parsers:
-            parser_args, parser_kwargs = parser.parse(req)
-            args.extend(parser_args)
-            kwargs.update(parser_kwargs)
-        try:
-            resp_generator = self.func(req, *args, **kwargs)
-        except exc.HTTPException, e:
-            resp = e
-            return resp(environ, start_response)
-        else:
-            status, headers = _http.defaults.status_and_headers
-            first_yield = resp_generator.next()
-            if not isinstance(first_yield, exc.HTTPException):
-                start_response(status, headers)
-                return recursively_iterate([first_yield, resp_generator])
-            else:
-                return first_yield(environ, start_response)
 
 class App(CallableApp):
     def __init__(self, dispatcher=defaults.dispatcher):
@@ -88,14 +18,10 @@ class App(CallableApp):
     def __call__(self, environ, start_response):
         return self.dispatcher(environ, start_response)
 
-    def controller(self, path=None, args=list()):
+    def controller(self, *args, **kwargs):
         def controller_wrapper(f):
-            c = Controller(f)
-            a = arguments.Arguments(*args)(c)
-            if path is None:
-                s = self.subapp()(a)
-            else:
-                s = self.subapp(path=path)(a)
+            c = f if isinstance(f, Controller) else Controller(f)
+            s = self.subapp(*args, **kwargs)(c)
             return s
         return controller_wrapper
         
