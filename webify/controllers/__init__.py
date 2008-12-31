@@ -8,14 +8,100 @@ from webob import exc
 from . import arguments
 from .. import http as _http
 
-class Controller(object):
+class CallableApp(object):
     def __init__(self, func):
         raise NotImplementedError
 
     def __call__(self, environ, start_response):
         raise NotImplementedError
 
-class ControllerWithArguments(Controller):
+def Url(object):
+    def __init__(self, url):
+        self.url = url
+
+    def __str__(self):
+        return self.url
+
+    def __repr__(self):
+        return self.url
+
+
+class Controller(CallableApp):
+    def __init__(self, func):
+        self.func = func
+        self.arg_parsers = []
+
+    def url(*args, **kwargs):
+        url_arg_parser = None
+        for parser in self.arg_parsers:
+            if isinstance(parser, UrlArgParser):
+                url_arg_parser = parser
+                break
+        if url_arg_parser is None:
+            return '/'
+        else:
+            return url_arg_parser.url(*args, **kwargs)
+    
+    def __call__(self, environ, start_response):
+        req = get_req(environ)
+        args, kwargs = [], {}
+        for parser in self.arg_parsers:
+            parser_args, parser_kwargs = parser.parse(req)
+            args.extend(parser_args)
+            kwargs.update(parser_kwargs)
+        try:
+            resp_generator = self.func(req, *args, **kwargs)
+        except exc.HTTPException, e:
+            resp = e
+            return resp(environ, start_response)
+        else:
+            status, headers = _http.defaults.status_and_headers
+            first_yield = resp_generator.next()
+            if not isinstance(first_yield, exc.HTTPException):
+                start_response(status, headers)
+                return recursively_iterate([first_yield, resp_generator])
+            else:
+                return first_yield(environ, start_response)
+
+def App2(CallableApp):
+    def subapp(self, *args, **kwargs):
+        def subapp_decorator(subapp):
+            subapp.superapp = self
+            subapp.__call__ = self.decorate_call(subapp)
+            if isinstance(subapp, Controller):
+                subapp.url = self.decorate_url(subapp)
+            elif isinstance(subapp, App2):
+                subapp.decorate_url = self.decorate_decorate_url(subapp)
+            self.dispatcher.register(subapp, *args, **kwargs)
+            return subapp
+        return subapp_decorator
+
+    def decorate_call(self, subapp):
+        # Template goes here
+        def call_decorator(environment, start_response):
+            yield subapp(environment, start_response)
+        return call_decorator
+
+    def decorate_decorate_url(self, subapp):
+        def decorate_url(subsubapp):
+            url_decorator = subapp.decorate_url(subsubapp)
+            def wrapper(*args, **kwargs):
+                suburl = url_decorator(*args, **kwargs)
+                url = self.dispatcher.url(controller, suburl)
+                return url
+            return wrapper
+        return decorate_url
+        
+        
+    def decorate_url(self, controller):
+        def url_decorator(*args, **kwargs):
+            suburl = controller.url(*args, **kwargs)
+            url = self.dispatcher.url(controller, suburl)
+            return url
+        return url_decorator
+
+
+class ControllerWithArguments(object):
     def __init__(self, func):
         self.func = func
         self.args = list()
