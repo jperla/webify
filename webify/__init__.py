@@ -70,6 +70,7 @@ class Controller(CallableApp):
         assert(not isinstance(func, Controller))
         self.func = func
         self.arg_parsers = []
+        self.superapp = None
 
     def url(self, *args, **kwargs):
         url_arg_parser = None
@@ -78,9 +79,13 @@ class Controller(CallableApp):
                 url_arg_parser = parser
                 break
         if url_arg_parser is None:
-            return '/'
+            suburl = '/'
         else:
-            return url_arg_parser.url(*args, **kwargs)
+            suburl = url_arg_parser.url(*args, **kwargs)
+        if self.superapp is not None:
+            return self.superapp.url(self, suburl)
+        else:
+            return suburl
     
     def __call__(self, environ, start_response):
         req = get_req(environ)
@@ -104,9 +109,11 @@ class Controller(CallableApp):
                 resp = exception = first_yield
                 return resp(environ, start_response)
 
-    def body(self, template):
-        return recursively_iterate(template)
-
+    def body(self, iterable):
+        if self.superapp is not None:
+            return self.superapp.body(recursively_iterate(iterable))
+        else:
+            return recursively_iterate(iterable)
 
 from . import apps
 from . import controllers

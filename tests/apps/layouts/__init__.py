@@ -15,6 +15,15 @@ def Layout(object):
             yield self.footer
         return body_decorator
     
+layout = Layout('''
+<html><head>
+<title>Hello App</title>
+</head><body>
+''', '''
+</body></html>
+''')
+
+app.body = layout(app.body)
 
 # Controllers
 @app.controller()

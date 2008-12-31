@@ -76,5 +76,5 @@ def test_layout():
         assert '200' in status
         assert 'joe' in body
         assert 'Hello, joe!' in body
-        #assert '<title>' in body
+        assert '<title>' in body
 
