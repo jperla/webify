@@ -25,8 +25,11 @@ def Url(object):
     def __repr__(self):
         return self.url
 
+class Controller(object):
+    def __init__(self):
+        pass
 
-class Controller(CallableApp):
+class Controller2(CallableApp):
     def __init__(self, func):
         self.func = func
         self.arg_parsers = []
@@ -64,11 +67,17 @@ class Controller(CallableApp):
                 return first_yield(environ, start_response)
 
 def App2(CallableApp):
+    def __init__(self, dispatcher):
+        self.dispatcher = dispatcher
+
+    def __call__(self, environ, start_response):
+        return self.dispatcher(environ, start_response)
+        
     def subapp(self, *args, **kwargs):
         def subapp_decorator(subapp):
             subapp.superapp = self
             subapp.__call__ = self.decorate_call(subapp)
-            if isinstance(subapp, Controller):
+            if isinstance(subapp, Controller2):
                 subapp.url = self.decorate_url(subapp)
             elif isinstance(subapp, App2):
                 subapp.decorate_url = self.decorate_decorate_url(subapp)
@@ -79,18 +88,18 @@ def App2(CallableApp):
     def decorate_call(self, subapp):
         # Template goes here
         def call_decorator(environment, start_response):
-            yield subapp(environment, start_response)
+            return subapp(environment, start_response)
         return call_decorator
 
     def decorate_decorate_url(self, subapp):
-        def decorate_url(subsubapp):
+        def decorate_url_decorator(subsubapp):
             url_decorator = subapp.decorate_url(subsubapp)
-            def wrapper(*args, **kwargs):
+            def url_decorator_decorator(*args, **kwargs):
                 suburl = url_decorator(*args, **kwargs)
                 url = self.dispatcher.url(controller, suburl)
                 return url
-            return wrapper
-        return decorate_url
+            return url_decorator_decorator
+        return decorate_url_decorator
         
         
     def decorate_url(self, controller):
@@ -101,7 +110,7 @@ def App2(CallableApp):
         return url_decorator
 
 
-class ControllerWithArguments(object):
+class ControllerWithArguments(Controller):
     def __init__(self, func):
         self.func = func
         self.args = list()
