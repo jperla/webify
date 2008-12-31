@@ -35,6 +35,7 @@ class App(CallableApp):
                 subapp.url = self._decorate_url(subapp, subapp.url)
             elif isinstance(subapp, App):
                 subapp.decorate_url = self._decorate_decorate_url(subapp.decorate_url)
+            subapp.body = self._decorate_body(subapp.body)
             self.dispatcher.register(subapp, *args, **kwargs)
             return subapp
         return subapp_decorator
@@ -44,6 +45,13 @@ class App(CallableApp):
         def call_decorator(environment, start_response):
             return subapp_call(environment, start_response)
         return call_decorator
+
+
+    def _decorate_body(self, controller_body):
+        def body_decorator(template):
+            body = controller_body(template)
+            return body
+        return body_decorator
 
     def _decorate_decorate_url(self, subapp_decorate_url):
         def decorate_url_decorator(subsubapp):

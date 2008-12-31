@@ -60,14 +60,14 @@ Webify includes
 - Error handling framework
 - Webapp testing framework
 - Standard template filters
+- Pluggable sub-webapps
 
 
 Webify still needs, in order,
-- Models and backend storage*
 - Layout system for templates
-- Pluggable sub-webapps*
 - Documentation, auto-generated from codebase, with auto-tests
 - Sessions and authentication*
+- Models and backend storage*
 - Email
 - Testing framework fixtures
 - Auto-admin (databrowse?)*

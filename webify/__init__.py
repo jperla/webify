@@ -51,7 +51,12 @@ class UrlArgParser(ArgParser):
     def url(self, *args, **kwargs):
         raise NotImplementedError
 
+class Template(object):
+    def __init__(self, iterable):
+        self.iterable = iterable
 
+    def __iter__(self):
+        return self.iterable
 
 class CallableApp(object):
     def __init__(self, func):
@@ -94,9 +99,13 @@ class Controller(CallableApp):
             first_yield = resp_generator.next()
             if not isinstance(first_yield, exc.HTTPException):
                 start_response(status, headers)
-                return recursively_iterate([first_yield, resp_generator])
+                return self.body([first_yield, resp_generator])
             else:
-                return first_yield(environ, start_response)
+                resp = exception = first_yield
+                return resp(environ, start_response)
+
+    def body(self, template):
+        return recursively_iterate(template)
 
 
 from . import apps

@@ -4,8 +4,8 @@ from webify.controllers import arguments
 app = webify.defaults.app()
 
 @app.controller()
-@arguments.add(arguments.RemainingUrl())
-def hello(req, name='world'):
+@arguments.add(arguments.RemainingUrl(name='world'))
+def hello(req, name):
     times = req.params.get('times', '1')
     for i in xrange(int(times)):
         yield 'Hello, %s!<br />' % name

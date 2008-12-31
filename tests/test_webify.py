@@ -6,6 +6,7 @@ from webob import Request, Response
 
 from .apps import simplest
 from .apps import hello
+from .apps import first_template
 
 import webify
 
@@ -63,4 +64,17 @@ def test_time_diff():
 def test_url_generation():
     url = simplest.hello.url('joe')
     assert url == '/hello/joe'
+
+def test_template():
+    with get(first_template.app, '/hello?name=joe') as (status, body):
+        assert '200' in status
+        assert 'joe' in body
+        assert 'Hello, joe!' in body
+
+def test_layout():
+    with get(first_template.app, '/hello?name=joe') as (status, body):
+        assert '200' in status
+        assert 'joe' in body
+        assert 'Hello, joe!' in body
+        #assert '<title>' in body
 
