@@ -3,16 +3,16 @@ import webify
 
 app = webify.defaults.app()
 
-def Layout(object):
+class Layout(object):
     def __init__(self, header, footer):
         self.header = header
         self.footer = footer
 
-    def __call__(body_func):
+    def __call__(self, body_func):
         def body_decorator(template):
-            yield self.header
-            yield body_func(template)
-            yield self.footer
+            return webify.recursively_iterate([self.header,
+                    body_func(template),
+                    self.footer])
         return body_decorator
     
 layout = Layout('''

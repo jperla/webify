@@ -7,6 +7,7 @@ from webob import Request, Response
 from .apps import simplest
 from .apps import hello
 from .apps import first_template
+from .apps import layouts
 
 import webify
 
@@ -72,7 +73,7 @@ def test_template():
         assert 'Hello, joe!' in body
 
 def test_layout():
-    with get(first_template.app, '/hello?name=joe') as (status, body):
+    with get(layouts.app, '/hello?name=joe') as (status, body):
         assert '200' in status
         assert 'joe' in body
         assert 'Hello, joe!' in body
