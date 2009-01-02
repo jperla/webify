@@ -4,10 +4,11 @@ import datetime
 
 from webob import Request, Response
 
-from .apps import simplest
-from .apps import hello
 from .apps import first_template
+from .apps import hello
 from .apps import layouts
+from .apps import simplest
+from .apps import standard
 
 import webify
 
@@ -79,3 +80,7 @@ def test_layout():
         assert 'Hello, joe!' in body
         assert '<title>' in body
 
+def test_static_app():
+    content = '''div {\n    color: blue;\n}\n'''
+    with get(standard.app, '/static/style.css') as (status, body):
+        assert content == body
