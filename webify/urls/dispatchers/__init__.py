@@ -11,12 +11,14 @@ class SimpleDispatcher(object):
 
     def register(self, subapp, path=None):
         name = ('/%s' % subapp.func.func_name) if path is None else path
+        if name in self.apps:
+            raise Exception('Already dispatching to path: %s' % path)
         self.apps[name] = subapp
         self.urls[subapp] = name
 
-    def url(self, controller, controller_url):
-        assert(controller in self.urls)
-        return self.urls[controller] + controller_url
+    def url(self, subapp, controller_url):
+        assert(subapp in self.urls)
+        return self.urls[subapp] + controller_url
 
     def __call__(self, environ, start_response):
         path_info = environ['PATH_INFO'] #for debugging
@@ -24,30 +26,31 @@ class SimpleDispatcher(object):
         if name is None:
             name = ''
         name = '/%s' % name
-        app = self.apps.get(name)
+        apps = self.apps
+        app = apps.get(name)
         if app is not None:
             return app(environ, start_response)
         else:
             raise http.status.not_found()
 
-#TODO: jperla: broke this
 class SingleDispatcher(object):
     def __init__(self):
-        self.controller = None
+        self.subapp = None
 
-    def urlize(self):
-        def decorator(controller):
-            assert(controller is not None)
-            self.controller = controller
-            return controller
-        return decorator
+    def register(self, subapp):
+        assert(subapp is not None)
+        if self.subapp is not None:
+            raise Exception('Single dispatcher only dispatches '
+                            'to one controller')
+        else:
+            self.subapp = subapp
 
-    def url(self, controller, controller_url):
-        assert(controller == self.controller)
-        return '/%s' % controller_url
+    def url(self, subapp, controller_url):
+        assert(subapp == self.subapp)
+        return '%s' % controller_url
 
     def __call__(self, environ, start_response):
-        app = self.controller
+        app = self.subapp
         if app is not None:
             return app(environ, start_response)
         else:

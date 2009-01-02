@@ -3,9 +3,10 @@ import os
 
 from ...controllers import arguments
 
-#TODO: jperla: test this
-
 def static(file_root='static/'):
+    '''
+    static = app.subapp(path='/static')(webify.apps.standard.static(file_root='static/'))
+    '''
     @arguments.add(arguments.RemainingUrl())
     def static(req, filename):
         #TODO: jperla: cache the static stuff forever
@@ -18,6 +19,5 @@ def static(file_root='static/'):
             yield webify.http.status.not_found()
     return static
 
-#static = #app.subapp(path='/static')(webify.apps.standard.static(file_root='static/'))
 
 

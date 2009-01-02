@@ -24,14 +24,14 @@ def test_index():
         assert 'Hello, world!' in body
 
 def test_simplest():
-    with get(simplest.app, '/hello/world?times=3') as (status, body):
+    with get(simplest.app, '/world?times=3') as (status, body):
         assert '200' in status
         assert 'world' in body
         assert 'Hello, world!' in body
         assert len(re.findall('world', body)) == 3
 
-def test_hello():
-    with get(simplest.app, '/hello/') as (status, body):
+def test_simplest_hello():
+    with get(simplest.app, '/') as (status, body):
         assert '200' in status
         assert 'world' in body
         assert 'Hello, world!' in body
@@ -46,8 +46,8 @@ def test_redirect():
         assert '/hello/' in body
 
 
-def test_remaining_mapper():
-    with get(simplest.app, '/hello/joe?times=10') as (status, body):
+def test_remaining_url_arg_parser():
+    with get(simplest.app, '/joe?times=10') as (status, body):
         assert '200' in status
         assert 'joe' in body
         assert 'Hello, joe!' in body
@@ -65,7 +65,7 @@ def test_time_diff():
 
 def test_url_generation():
     url = simplest.hello.url('joe')
-    assert url == '/hello/joe'
+    assert url == '/joe'
 
 def test_template():
     with get(first_template.app, '/hello?name=joe') as (status, body):

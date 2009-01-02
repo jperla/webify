@@ -1,11 +1,11 @@
 import webify
 from webify.controllers import arguments
 
-app = webify.defaults.app()
+app = webify.apps.SimpleApp()
 
 @app.controller()
-@arguments.add(arguments.RemainingUrl(name='world'))
-def hello(req, name):
+@arguments.add(arguments.RemainingUrl())
+def hello(req, name='world'):
     times = req.params.get('times', '1')
     for i in xrange(int(times)):
         yield 'Hello, %s!<br />' % name

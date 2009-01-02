@@ -7,7 +7,7 @@ from webob import exc
 
 from . import standard
 
-from ..urls import defaults
+from ..urls import defaults, dispatchers
 from ..controllers import arguments
 from .. import http as _http
 from .. import Controller, CallableApp
@@ -53,5 +53,10 @@ class App(CallableApp):
             return subapp_call(environment, start_response)
         return call_decorator
 
+
+
+class SimpleApp(App):
+    def __init__(self):
+        App.__init__(self, dispatcher=dispatchers.SingleDispatcher)
 
 
