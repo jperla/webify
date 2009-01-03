@@ -94,20 +94,17 @@ class Controller(CallableApp):
             parser_args, parser_kwargs = parser.parse(req)
             args.extend(parser_args)
             kwargs.update(parser_kwargs)
-        try:
-            resp_generator = self.func(req, *args, **kwargs)
-        except exc.HTTPException, e:
-            resp = e
-            return resp(environ, start_response)
+        resp_iterator = self.func(req, *args, **kwargs)
+
+         #TODO: jperla: should also check to see if itself is superapp
+        status, headers = http.defaults.status_and_headers
+        first_yield = resp_iterator.next()
+        if not isinstance(first_yield, exc.HTTPException):
+            start_response(status, headers)
+            return self.body([first_yield, resp_iterator])
         else:
-            status, headers = http.defaults.status_and_headers
-            first_yield = resp_generator.next()
-            if not isinstance(first_yield, exc.HTTPException):
-                start_response(status, headers)
-                return self.body([first_yield, resp_generator])
-            else:
-                resp = exception = first_yield
-                return resp(environ, start_response)
+            resp = exception = first_yield
+            return resp(environ, start_response)
 
     def body(self, iterable):
         if self.superapp is not None:

@@ -15,11 +15,24 @@ from .. import Controller, CallableApp
 
 class App(CallableApp):
     def __init__(self, dispatcher=defaults.dispatcher):
+        #TODO: jperla: should pass an object, not a class
         self.dispatcher = dispatcher()
         self.superapp = None
+        self.layout = None
 
     def __call__(self, environ, start_response):
-        return self.dispatcher(environ, start_response)
+        if self.superapp is not None:
+            resp_iterator = self.dispatcher(environ, start_response)
+            return resp_iterator
+        else:
+            try:
+                resp_iterator = self.dispatcher(environ, start_response)
+            except exc.HTTPException, e:
+                resp = e
+                return resp(environ, start_response)
+            else:
+                return resp_iterator
+
 
     def controller(self, *args, **kwargs):
         def controller_wrapper(f):
@@ -45,8 +58,10 @@ class App(CallableApp):
         return super_url
 
     def body(self, iterable):
-        # Layouts here
-        return iterable
+        if self.layout is None:
+            return iterable
+        else:
+            return self.layout(iterable)
 
     def _decorate_call(self, subapp_call):
         def call_decorator(environment, start_response):
@@ -55,7 +70,7 @@ class App(CallableApp):
 
 
 
-class SimpleApp(App):
+class SingleApp(App):
     def __init__(self):
         App.__init__(self, dispatcher=dispatchers.SingleDispatcher)
 

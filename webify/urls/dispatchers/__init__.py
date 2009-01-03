@@ -18,7 +18,8 @@ class SimpleDispatcher(object):
 
     def url(self, subapp, controller_url):
         assert(subapp in self.urls)
-        return self.urls[subapp] + controller_url
+        #TODO: jperla: fix index urls
+        return (self.urls[subapp] + controller_url).replace('//', '/')
 
     def __call__(self, environ, start_response):
         path_info = environ['PATH_INFO'] #for debugging

@@ -1,7 +1,7 @@
 import webify
 from webify.controllers import arguments
 
-app = webify.apps.SimpleApp()
+app = webify.apps.SingleApp()
 
 @app.controller()
 @arguments.add(arguments.RemainingUrl())
