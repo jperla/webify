@@ -5,6 +5,7 @@ import datetime
 from webob import Request, Response
 
 from .apps import first_template
+from .apps import send_email
 from .apps import hello
 from .apps import layouts
 from .apps import simplest
@@ -12,7 +13,7 @@ from .apps import standard
 
 import webify
 
-from webify.tests import get, post
+from webify.tests import get, post, difference
 
 def test_url():
     url = hello.hello.url()
@@ -84,3 +85,10 @@ def test_static_app():
     content = '''div {\n    color: blue;\n}\n'''
     with get(standard.app, '/static/style.css') as (status, body):
         assert content == body
+
+def test_send_email():
+    with difference(lambda:len(send_email.mail_server.sent_email)):
+        with get(send_email.wrapped_app, '/static/style.css') as (status, body):
+            assert '200' in status
+    
+
