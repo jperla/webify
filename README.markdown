@@ -12,11 +12,12 @@ Example: a complete Webify application
 ======================================
 
     import webify
+    from webify.controllers import arguments
 
-    app = webify.App(dispatcher=webify.urls.dispatchers.SingleDispatcher)
+    app = webify.apps.SingleApp()
 
     @app.controller()
-    @app.simple_args(name=webify.controllers.arguments.RemainingArgParser())
+    @arguments.add(arguments.RemainingUrl())
     def hello(req, name='world'):
         times = req.params.get('times', '1')
         for i in xrange(int(times)):
