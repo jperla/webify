@@ -62,6 +62,7 @@ Webify includes
 - Standard template filters
 - Pluggable sub-webapps
 - Natural code layout using modules
+- Email framework
 
 
 Webify still needs, in order,
@@ -70,7 +71,6 @@ Webify still needs, in order,
 - Documentation, auto-generated from codebase, with auto-tests
 - Sessions and authentication*
 - Models and backend storage*
-- Email
 - Testing framework fixtures
 - Auto-admin (databrowse?)*
 - Synchronous and asynchronous signals and dispatchers*
