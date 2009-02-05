@@ -30,6 +30,7 @@ Example: a complete Webify application
 
 Programming and Design Philosophy
 =================================
+
 * The Zen of Python
 * Don't repeat yourself
 * Simplicity over features
@@ -49,6 +50,7 @@ Programming and Design Philosophy
 TODO
 ====
 Webify includes 
+
 - Controllers
 - Templates and helpers
 - Beautiful Urls
@@ -66,6 +68,7 @@ Webify includes
 
 
 Webify still needs, in order,
+
 - A debugging server thread
 - Layout system for templates
 - Documentation, auto-generated from codebase, with auto-tests
@@ -84,6 +87,7 @@ Webify still needs, in order,
 
 
 Webify will never have
+
 * { Braces }
 * Pagination
 * Clunky design
