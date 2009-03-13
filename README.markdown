@@ -66,11 +66,11 @@ Webify includes
 - Pluggable sub-webapps
 - Natural code layout using modules
 - Email framework
+- A debugging server thread
 
 
 Webify still needs, in order,
 
-- A debugging server thread
 - Layout system for templates
 - Documentation, auto-generated from codebase, with auto-tests
 - Sessions and authentication*
