@@ -2,13 +2,13 @@ from __future__ import absolute_import
 
 import os
 import time
-import signal
+import types
 
 import webob
 from webob import exc, Request, Response
 
 def run(app, reload=False):
-    http.server.serve(app, host=defaults.host, port=defaults.port)
+    http.server.serve(app, host=defaults.host, port=defaults.port, reload=reload)
 
 
 
@@ -103,11 +103,19 @@ class Controller(CallableApp):
         resp_iterator = self.func(req, *args, **kwargs)
 
          #TODO: jperla: should also check to see if itself is superapp
-        status, headers = http.defaults.status_and_headers
         first_yield = resp_iterator.next()
         if not isinstance(first_yield, exc.HTTPException):
-            start_response(status, headers)
-            return self.body([first_yield, resp_iterator])
+            if isinstance(first_yield, types.TupleType):
+                #TODO: jperla: do more explicit type checking
+                if len(first_yield) != 2:
+                    raise Exception('Too many items in states/headers tuple: %s' % first_yield)
+                status, headers = first_yield
+                start_response(status, headers)
+                return self.body(resp_iterator)
+            else:
+                status, headers = http.defaults.status_and_headers
+                start_response(status, headers)
+                return self.body([first_yield, resp_iterator])
         else:
             resp = exception = first_yield
             return resp(environ, start_response)
