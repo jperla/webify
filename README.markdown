@@ -45,7 +45,7 @@ Programming and Design Philosophy
 * Build bottom-up as well as top-down
 * Code less
 * Don't repeat yourself
-* Write sloppy, test quickly, rebuild cleanly
+* Automate everything
 * No pagination
 
 TODO
@@ -63,14 +63,16 @@ Webify includes
 - Error handling framework
 - Webapp testing framework
 - Standard template filters
-- Pluggable sub-webapps
 - Natural code layout using modules
 - Email framework
 - A debugging server thread
+- Web args
 
 
 Webify still needs, in order,
 
+- Pluggable sub-webapps
+- Unicode safety
 - Layout system for templates
 - Documentation, auto-generated from codebase, with auto-tests
 - Sessions and authentication*
