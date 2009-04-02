@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 
-from ...urls import dispatchers
 from ... import ArgParser, Controller, UrlArgParser
 
 NoArgument = object()
