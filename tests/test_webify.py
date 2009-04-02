@@ -20,40 +20,40 @@ def test_url():
     assert url == '/hello/'
     
 def test_index():
-    with get(hello.app, '/') as (status, body):
-        assert '200' in status
-        assert 'Hello, world!' in body
+    with get(hello.app, '/') as r:
+        assert '200' in r.status
+        assert 'Hello, world!' in r.body
 
 def test_simplest():
-    with get(simplest.app, '/world?times=3') as (status, body):
-        assert '200' in status
-        assert 'world' in body
-        assert 'Hello, world!' in body
-        assert len(re.findall('world', body)) == 3
+    with get(simplest.app, '/world?times=3') as r:
+        assert '200' in r.status
+        assert 'world' in r.body
+        assert 'Hello, world!' in r.body
+        assert len(re.findall('world', r.body)) == 3
 
 def test_simplest_hello():
-    with get(simplest.app, '/') as (status, body):
-        assert '200' in status
-        assert 'world' in body
-        assert 'Hello, world!' in body
-        assert '<br />' in body
-        assert '500' not in status
-        assert 'Error' not in status
-        assert 'Error' not in body
+    with get(simplest.app, '/') as r:
+        assert '200' in r.status
+        assert 'world' in r.body
+        assert 'Hello, world!' in r.body
+        assert '<br />' in r.body
+        assert '500' not in r.status
+        assert 'Error' not in r.status
+        assert 'Error' not in r.body
 
 def test_redirect():
-    with get(hello.app, '/hello_old/') as (status, body):
-        assert '302' in status
-        assert '/hello/' in body
+    with get(hello.app, '/hello_old/') as r:
+        assert '302' in r.status
+        assert '/hello/' in r.body
 
 
 def test_remaining_url_arg_parser():
-    with get(simplest.app, '/joe?times=10') as (status, body):
-        assert '200' in status
-        assert 'joe' in body
-        assert 'Hello, joe!' in body
-        assert len(re.findall('joe', body)) == 10
-        assert 'Hello, joe!' in body
+    with get(simplest.app, '/joe?times=10') as r:
+        assert '200' in r.status
+        assert 'joe' in r.body
+        assert 'Hello, joe!' in r.body
+        assert len(re.findall('joe', r.body)) == 10
+        assert 'Hello, joe!' in r.body
 
 def test_time_diff():
     time = datetime.datetime.now()
@@ -69,26 +69,26 @@ def test_url_generation():
     assert url == '/joe'
 
 def test_template():
-    with get(first_template.app, '/hello?name=joe') as (status, body):
-        assert '200' in status
-        assert 'joe' in body
-        assert 'Hello, joe!' in body
+    with get(first_template.app, '/hello?name=joe') as r:
+        assert '200' in r.status
+        assert 'joe' in r.body
+        assert 'Hello, joe!' in r.body
 
 def test_layout():
-    with get(layouts.app, '/hello?name=joe') as (status, body):
-        assert '200' in status
-        assert 'joe' in body
-        assert 'Hello, joe!' in body
-        assert '<title>' in body
+    with get(layouts.app, '/hello?name=joe') as r:
+        assert '200' in r.status
+        assert 'joe' in r.body
+        assert 'Hello, joe!' in r.body
+        assert '<title>' in r.body
 
 def test_static_app():
     content = '''div {\n    color: blue;\n}\n'''
-    with get(standard.app, '/static/style.css') as (status, body):
-        assert content == body
+    with get(standard.app, '/static/style.css') as r:
+        assert content == r.body
 
 def test_send_email():
     with difference(lambda:len(send_email.mail_server.sent_email)):
-        with get(send_email.wrapped_app, '/static/style.css') as (status, body):
-            assert '200' in status
+        with get(send_email.wrapped_app, '/static/style.css') as r:
+            assert '200' in r.status
     
 

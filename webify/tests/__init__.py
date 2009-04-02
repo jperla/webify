@@ -4,19 +4,19 @@ from webob import Request, Response
 import types
 
 @contextmanager
-def get(app, url, host='http://localhost'):
-    req = Request.blank(host + url)
-    resp = req.get_response(app)
-    yield str(resp.status), str(resp.body)
+def get(app, path, host='http://localhost'):
+    req = Request.blank(host + path)
+    response = req.get_response(app)
+    yield response
 
 @contextmanager
-def post(app, url, data, host='http://localhost'):
-    req = Request.blank(host + url)
+def post(app, path, data, host='http://localhost'):
+    req = Request.blank(host + path)
     req.method = 'POST'
     for key in data:
         req.POST[key] = data[key]
-    resp = req.get_response(app)
-    yield str(resp.status), str(resp.body)
+    response = req.get_response(app)
+    yield response
 
 
 @contextmanager
