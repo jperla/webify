@@ -5,11 +5,6 @@ import logging
 from webob import Request, Response
 from webob import exc
 
-from . import arguments
-from .. import http as _http
-
-
-
 def raw_controller(func):
     def replacement(environ, start_response):
         req = get_req(environ)

@@ -1,13 +1,13 @@
 from __future__ import absolute_import
 import os
 
-from ...controllers import arguments
+from ...controllers import webargs
 
 def static(file_root='static/'):
     '''
     static = app.subapp(path='/static')(webify.apps.standard.static(file_root='static/'))
     '''
-    @arguments.add(arguments.RemainingUrl())
+    @webargs.add(webargs.RemainingUrl())
     def static(req, filename):
         #TODO: jperla: cache the static stuff forever
         # #TODO: jperla: Note: security problem

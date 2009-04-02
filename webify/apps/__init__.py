@@ -8,7 +8,6 @@ from webob import exc
 from . import standard
 
 from ..urls import defaults, dispatchers
-from ..controllers import arguments
 from .. import http as _http
 from .. import Controller, CallableApp
 

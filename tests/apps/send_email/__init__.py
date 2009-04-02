@@ -1,5 +1,4 @@
 import webify
-from webify.controllers import arguments
 
 app = webify.apps.SingleApp()
 
