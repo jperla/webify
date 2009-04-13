@@ -8,9 +8,9 @@ app = webify.defaults.app()
 # Controllers
 @app.controller(path='/')
 def index(req):
-    yield 'Hello, world!'
+    yield u'Hello, world!'
 
-static_path = 'tests/apps/standard/static/'
+static_path = u'tests/apps/standard/static/'
 static = app.subapp(path='/static')(webify.apps.standard.static(static_path))
     
 
@@ -23,5 +23,5 @@ wrapped_app = install_middleware(app, [
 # Server
 from webify.http import server
 if __name__ == '__main__':
-    server.serve(app, host='127.0.0.1', port='8080')
+    server.serve(app, host='127.0.0.1', port=8080)
 

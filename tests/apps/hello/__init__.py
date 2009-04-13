@@ -8,19 +8,19 @@ app = webify.defaults.app()
 # Controllers
 @app.controller(path='/')
 def index(req):
-    yield 'Hello, world!'
+    yield u'Hello, world!'
 
 @app.controller()
 def hello(req):
-    yield '<form method="POST">'
+    yield u'<form method="POST">'
     name = req.params.get('name', None)
     if name is None:
-        yield 'Hello, world! <br />'
+        yield u'Hello, world! <br />'
     else:
-        yield 'Hello, %(name)s! <br />' % {'name': name}
-    yield 'Your name: <input type="text" name="name">'
-    yield '<input type="submit">'
-    yield '</form>'
+        yield u'Hello, %(name)s! <br />' % {'name': name}
+    yield u'Your name: <input type="text" name="name">'
+    yield u'<input type="submit">'
+    yield u'</form>'
 
 @app.controller()
 def hello_old(req):
@@ -35,5 +35,5 @@ wrapped_app = install_middleware(app, [
 # Server
 from webify.http import server
 if __name__ == '__main__':
-    server.serve(app, host='127.0.0.1', port='8080')
+    server.serve(app, host='127.0.0.1', port=8080)
 

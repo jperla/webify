@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+#import chardet
+
 from ... import ArgParser, Controller, UrlArgParser
 
 NoArgument = object()
@@ -38,8 +40,12 @@ class RemainingUrl(UrlArgParser):
 
     def parse(self, req):
         remaining = req.path_info[1:]
+        # jperla: add this later
+        #chardet.decode
+        remaining = remaining.decode(u'utf-8')
+        
         args, kwargs = [], self.defaults
-        if remaining != '':
+        if remaining != u'':
             if len(self.defaults) == 1:
                 kwargs[self.defaults.keys()[0]] = remaining
             else:
@@ -47,5 +53,5 @@ class RemainingUrl(UrlArgParser):
         return args, kwargs
 
     def url(self, remaining):
-        return '/%s' % remaining
+        return u'/%s' % remaining
 

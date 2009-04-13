@@ -15,16 +15,18 @@ def run(app, reload=False):
 
 def get_req(environ):
     req = Request(environ)
-    if 'settings' not in req.environ or req.environ['settings'] == []:
+    if u'settings' not in req.environ or req.environ[u'settings'] == []:
         req.settings = {} 
     else:
-        req.settings = req.environ['settings'][0] 
+        req.settings = req.environ[u'settings'][0] 
     return req
 
 
 def recursively_iterate(g):
     for item in g:
-        if not hasattr(item, '__iter__'):
+        if isinstance(item, str):
+            raise Exception(u'Always work with unicode within your app!')
+        elif isinstance(item, unicode):
             yield item
         else:
             for subitem in recursively_iterate(item):
@@ -85,7 +87,7 @@ class Controller(CallableApp):
                 url_arg_parser = parser
                 break
         if url_arg_parser is None:
-            suburl = '/'
+            suburl = u'/'
         else:
             suburl = url_arg_parser.url(*args, **kwargs)
         if self.superapp is not None:
@@ -124,7 +126,12 @@ class Controller(CallableApp):
         if self.superapp is not None:
             return self.superapp.body(recursively_iterate(iterable))
         else:
-            return recursively_iterate(iterable)
+            #TODO: jperla: detect encoding; don't just use utf-8
+            return output_encoding(recursively_iterate(iterable), u'utf-8')
+
+def output_encoding(strings, encoding):
+    for s in strings:
+        yield s.encode(encoding)
 
 from . import apps
 from . import controllers

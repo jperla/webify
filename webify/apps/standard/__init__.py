@@ -13,8 +13,8 @@ def static(file_root='static/'):
         # #TODO: jperla: Note: security problem
         path = os.path.join(file_root, filename)
         if os.path.exists(path) and os.path.isfile(path):
-            for line in open(path).readlines():
-                yield line
+            for line in open(path, 'rb').readlines():
+                yield unicode(line)
         else:
             yield webify.http.status.not_found()
     return static

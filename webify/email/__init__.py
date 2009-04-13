@@ -5,9 +5,9 @@ import email
 def send_email(sender, recipient, subject, body, send=True):
     message = email.mime.text.MIMEText(body)
 
-    message['Subject'] = subject
-    message['From'] = sender
-    message['To'] = recipient
+    message[u'Subject'] = subject
+    message[u'From'] = sender
+    message[u'To'] = recipient
 
     if send:
         s = smtplib.SMTP()
@@ -21,19 +21,19 @@ def send_email(sender, recipient, subject, body, send=True):
 def create_text_message(sender, recipients, subject, body):
     message = email.mime.text.MIMEText(body)
 
-    message['Subject'] = subject
-    message['From'] = sender
+    message[u'Subject'] = subject
+    message[u'From'] = sender
     #TODO: jperla: allow this to be more complicated:
     # i.e. tuples of (name,email)
-    message['To'] = ', '.join(recipients)
+    message[u'To'] = u', '.join(recipients)
 
     return message
 
 def sender_and_recipients_from_message(message, bcc=None):
     bcc = [] if bcc is None else bcc
-    sender = message['From']
+    sender = message[u'From']
     #TODO: jperla: strip out emails between <> maybe?
-    recipients = [e.strip() for e in message['To'].split(',')]
+    recipients = [e.strip() for e in message[u'To'].split(u',')]
     recipients.extend(bcc)
     return sender, recipients
 

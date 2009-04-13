@@ -19,9 +19,9 @@ Example: a complete Webify application
     @app.controller()
     @webargs.add(webargs.RemainingUrl())
     def hello(req, name='world'):
-        times = req.params.get('times', '1')
+        times = req.params.get(u'times', 1)
         for i in xrange(int(times)):
-            yield 'Hello, %s!<br />' % name
+            yield u'Hello, %s!<br />' % name
 
     if __name__ == '__main__':
         webify.run(app)

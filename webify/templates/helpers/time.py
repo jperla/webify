@@ -6,8 +6,8 @@ def fuzzy_time_diff(begin, end=None):
     between now() and the input timestamp.
     
     The output rounds up to days, hours, minutes, or seconds.
-    4 days 5 hours returns '4 days'
-    0 days 4 hours 3 minutes returns '4 hours', etc...
+    4 days 5 hours returns "4 days"
+    0 days 4 hours 3 minutes returns "4 hours", etc...
     """
     if end is None:
         end = datetime.datetime.now()

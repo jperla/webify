@@ -4,14 +4,14 @@ app = webify.apps.SingleApp()
 
 @app.controller()
 def send(req):
-    email = req.params.get('email', 'nobody@jperla.com')
-    mail_server = req.settings['mail_server']
-    message = webify.email.create_text_message('nobody@jperla.com',
+    email = req.params.get(u'email', u'nobody@jperla.com')
+    mail_server = req.settings[u'mail_server']
+    message = webify.email.create_text_message(u'nobody@jperla.com',
                                                 [email],
-                                                'Hello, World!',
-                                                'I am sending you a text message')
+                                                u'Hello, World!',
+                                                u'I am sending you a text message')
     mail_server.send_message(message)
-    yield 'Sent email.'
+    yield u'Sent email.'
 
 # Middleware
 from webify.middleware import install_middleware, SettingsMiddleware

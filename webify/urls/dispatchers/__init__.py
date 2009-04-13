@@ -10,23 +10,23 @@ class SimpleDispatcher(object):
         self.apps, self.urls = {}, {}
 
     def register(self, subapp, path=None):
-        name = ('/%s' % subapp.func.func_name) if path is None else path
+        name = (u'/%s' % subapp.func.func_name) if path is None else path
         if name in self.apps:
-            raise Exception('Already dispatching to path: %s' % path)
+            raise Exception(u'Already dispatching to path: %s' % path)
         self.apps[name] = subapp
         self.urls[subapp] = name
 
     def url(self, subapp, controller_url):
         assert(subapp in self.urls)
         #TODO: jperla: fix index urls
-        return (self.urls[subapp] + controller_url).replace('//', '/')
+        return (self.urls[subapp] + controller_url).replace(u'//', u'/')
 
     def __call__(self, environ, start_response):
-        path_info = environ['PATH_INFO'] #for debugging
+        path_info = environ[u'PATH_INFO'] #for debugging
         name = wsgiref.util.shift_path_info(environ)
         if name is None:
-            name = ''
-        name = '/%s' % name
+            name = u''
+        name = u'/%s' % name
         apps = self.apps
         app = apps.get(name)
         if app is not None:
@@ -41,14 +41,14 @@ class SingleDispatcher(object):
     def register(self, subapp):
         assert(subapp is not None)
         if self.subapp is not None:
-            raise Exception('Single dispatcher only dispatches '
-                            'to one controller')
+            raise Exception(u'Single dispatcher only dispatches'
+                            u' to one controller')
         else:
             self.subapp = subapp
 
     def url(self, subapp, controller_url):
         assert(subapp == self.subapp)
-        return '%s' % controller_url
+        return u'%s' % controller_url
 
     def __call__(self, environ, start_response):
         app = self.subapp
