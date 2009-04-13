@@ -2,9 +2,6 @@ from __future__ import absolute_import
 import types
 import logging
 
-from webob import Request, Response
-from webob import exc
-
 from . import standard
 
 from ..urls import defaults, dispatchers
@@ -26,7 +23,7 @@ class App(CallableApp):
         else:
             try:
                 resp_iterator = self.dispatcher(environ, start_response)
-            except exc.HTTPException, e:
+            except http.status.HTTPController, e:
                 resp = e
                 return resp(environ, start_response)
             else:

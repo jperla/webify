@@ -4,17 +4,12 @@ import os
 import time
 import types
 
-import webob
-from webob import exc, Request, Response
-
 def run(app, reload=False):
     http.server.serve(app, host=defaults.host, port=defaults.port, reload=reload)
 
 
-
-
 def get_req(environ):
-    req = Request(environ)
+    req = http.Request(environ)
     if u'settings' not in req.environ or req.environ[u'settings'] == []:
         req.settings = {} 
     else:
@@ -104,9 +99,10 @@ class Controller(CallableApp):
             kwargs.update(parser_kwargs)
         resp_iterator = self.func(req, *args, **kwargs)
 
-         #TODO: jperla: should also check to see if itself is superapp
+        # TODO: jperla: should also check to see if itself is superapp
         first_yield = resp_iterator.next()
-        if not isinstance(first_yield, exc.HTTPException):
+        #TODO: jperla: confusing logic
+        if not isinstance(first_yield, http.status.HTTPController):
             if isinstance(first_yield, types.TupleType):
                 #TODO: jperla: do more explicit type checking
                 if len(first_yield) != 2:

@@ -3,8 +3,6 @@ from __future__ import absolute_import, with_statement
 import re
 import datetime
 
-from webob import Request, Response
-
 from .apps import first_template
 from .apps import send_email
 from .apps import hello

@@ -1,19 +1,19 @@
 from contextlib import contextmanager
 
-from webob import Request, Response
+from .. import http
 import types
 
 @contextmanager
 def get(app, path, host='http://localhost'):
     assert(not isinstance(path, unicode), u'Must ask for encoded path')
-    req = Request.blank(host + path)
+    req = http.Request.blank(host + path)
     response = req.get_response(app)
     yield response
 
 @contextmanager
 def post(app, path, data, host='http://localhost'):
     assert(not isinstance(path, unicode), u'Must ask for encoded path')
-    req = Request.blank(host + path)
+    req = http.Request.blank(host + path)
     req.method = u'POST'
     for key in data:
         req.POST[key] = data[key]

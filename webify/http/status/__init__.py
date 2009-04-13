@@ -1,12 +1,15 @@
 from __future__ import absolute_import
 
-import webob
+from webob import exc as _exc
 
 ok = '200 OK'
 
+HTTPController = _exc.HTTPException
+HTTP301Controller = _exc.HTTPFound
+HTTP404Controller = _exc.HTTPNotFound
+
 def redirect(location, *args, **kwargs):
-    redirect_status = webob.exc.HTTPFound
-    return redirect_status(location=location)
+    return HTTP301Controller(location=location)
 
 def not_found(body=''):
-    return webob.exc.HTTPNotFound()
+    return HTTP404Controller()
