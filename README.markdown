@@ -18,7 +18,7 @@ Example: a complete Webify application
 
     @app.controller()
     @webargs.add(webargs.RemainingUrl())
-    def hello(req, name='world'):
+    def hello(req, name=u'world'):
         times = req.params.get(u'times', 1)
         for i in xrange(int(times)):
             yield u'Hello, %s!<br />' % name
@@ -67,17 +67,17 @@ Webify includes
 - Email framework
 - A debugging server thread
 - Web args
+- Full Unicode compliance and safety
 
 
 Webify still needs, in order,
 
 - Pluggable sub-webapps
-- Unicode safety
 - Layout system for templates
 - Documentation, auto-generated from codebase, with auto-tests
 - Sessions and authentication*
 - Models and backend storage*
-- Testing framework fixtures
+- Testing framework data fixtures
 - Auto-admin (databrowse?)*
 - Synchronous and asynchronous signals and dispatchers*
 - Cache system*
