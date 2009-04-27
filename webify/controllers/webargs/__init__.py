@@ -55,3 +55,16 @@ class RemainingUrl(UrlArgParser):
     def url(self, remaining):
         return u'/%s' % remaining
 
+class SettingsArgParser(UrlArgParser):
+    #TODO: jperla: make this more powerful
+    def __init__(self, setting_name, default=None):
+        self.setting_name = setting_name
+        self.default = default
+
+    def parse(self, req):
+        args, kwargs = [], {}
+        kwargs[self.setting_name] = req.settings[self.setting_name]
+        return args, kwargs
+
+    def url(self, remaining):
+        return '/%s' % remaining

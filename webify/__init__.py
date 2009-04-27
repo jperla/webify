@@ -120,14 +120,15 @@ class Controller(CallableApp):
 
     def body(self, iterable):
         if self.superapp is not None:
-            return self.superapp.body(recursively_iterate(iterable))
+            return output_encoding(self.superapp.body(recursively_iterate(iterable)), u'utf-8')
         else:
             #TODO: jperla: detect encoding; don't just use utf-8
             return output_encoding(recursively_iterate(iterable), u'utf-8')
 
 def output_encoding(strings, encoding):
     for s in strings:
-        yield s.encode(encoding)
+        encoded = s.encode(encoding)
+        yield encoded
 
 from . import apps
 from . import controllers

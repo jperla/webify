@@ -17,27 +17,27 @@ def fuzzy_time_diff(begin, end=None):
     minutes = timeDiff.seconds%3600/60
     seconds = timeDiff.seconds%3600%60
     
-    str = ""
-    tStr = ""
+    str = u''
+    tStr = u''
     if days > 0:
-        if days == 1:   tStr = "day"
-        else:           tStr = "days"
-        str = str + "%s %s" %(days, tStr)
+        if days == 1:   tStr = u'day'
+        else:           tStr = u'days'
+        str = str + u'%s %s' %(days, tStr)
         return str
     elif hours > 0:
-        if hours == 1:  tStr = "hour"
-        else:           tStr = "hours"
-        str = str + "%s %s" %(hours, tStr)
+        if hours == 1:  tStr = u'hour'
+        else:           tStr = u'hours'
+        str = str + u'%s %s' %(hours, tStr)
         return str
     elif minutes > 0:
-        if minutes == 1:tStr = "minutes"
-        else:           tStr = "minutes"           
-        str = str + "%s %s" %(minutes, tStr)
+        if minutes == 1:tStr = u'minutes'
+        else:           tStr = u'minutes'           
+        str = str + u'%s %s' %(minutes, tStr)
         return str
     elif seconds > 0:
-        if seconds == 1:tStr = "second"
-        else:           tStr = "seconds"
-        str = str + "%s %s" %(seconds, tStr)
+        if seconds == 1:tStr = u'second'
+        else:           tStr = u'seconds'
+        str = str + u'%s %s' %(seconds, tStr)
         return str
     else:
         return None
