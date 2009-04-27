@@ -106,7 +106,7 @@ class Controller(CallableApp):
             if isinstance(first_yield, types.TupleType):
                 #TODO: jperla: do more explicit type checking
                 if len(first_yield) != 2:
-                    raise Exception('Too many items in states/headers tuple: %s' % first_yield)
+                    raise Exception(u'Too many items in states/headers tuple: %s' % first_yield)
                 status, headers = first_yield
                 start_response(status, headers)
                 return self.body(resp_iterator)

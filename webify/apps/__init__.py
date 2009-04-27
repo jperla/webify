@@ -23,7 +23,7 @@ class App(CallableApp):
         else:
             try:
                 resp_iterator = self.dispatcher(environ, start_response)
-            except http.status.HTTPController, e:
+            except _http.status.HTTPController, e:
                 resp = e
                 return resp(environ, start_response)
             else:
