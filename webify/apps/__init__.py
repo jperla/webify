@@ -54,16 +54,37 @@ class App(CallableApp):
         return super_url
 
     def body(self, iterable):
+        q = []
         if self.layout is None:
-            return iterable
+            q = iterable
         else:
-            return self.layout(iterable)
+            q = self.layout(iterable)
+        if self.superapp is None:
+            print 'shit'
+            return output_encoding(recursively_iterate(q), u'utf-8')
+        else:
+            return q
 
     def _decorate_call(self, subapp_call):
         def call_decorator(environment, start_response):
             return subapp_call(environment, start_response)
         return call_decorator
 
+
+#TODO: jperla: trash this shit
+def recursively_iterate(item):
+    if isinstance(item, unicode):
+        yield item
+    elif isinstance(item, str):
+        raise Exception(u'Always work with unicode within your app!')
+    else:
+        for subitem in item:
+            for i in recursively_iterate(subitem):
+                yield i
+def output_encoding(strings, encoding):
+    for s in strings:
+        encoded = s.encode(encoding)
+        yield encoded
 
 
 class SingleApp(App):

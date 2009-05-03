@@ -17,15 +17,15 @@ def get_req(environ):
     return req
 
 
-def recursively_iterate(g):
-    for item in g:
-        if isinstance(item, str):
-            raise Exception(u'Always work with unicode within your app!')
-        elif isinstance(item, unicode):
-            yield item
-        else:
-            for subitem in recursively_iterate(item):
-                yield subitem
+def recursively_iterate(item):
+    if isinstance(item, str):
+        raise Exception(u'Always work with unicode within your app!')
+    elif isinstance(item, unicode):
+        yield item
+    else:
+        for subitem in item:
+            for i in recursively_iterate(subitem):
+                yield i
 
 def Url(object):
     def __init__(self, url):
@@ -120,13 +120,17 @@ class Controller(CallableApp):
 
     def body(self, iterable):
         if self.superapp is not None:
-            return output_encoding(self.superapp.body(recursively_iterate(iterable)), u'utf-8')
+            return self.superapp.body(iterable)
         else:
             #TODO: jperla: detect encoding; don't just use utf-8
             return output_encoding(recursively_iterate(iterable), u'utf-8')
 
 def output_encoding(strings, encoding):
     for s in strings:
+        if not isinstance(s, unicode):
+            print s
+        else:
+            print s
         encoded = s.encode(encoding)
         yield encoded
 
