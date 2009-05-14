@@ -60,7 +60,6 @@ class App(CallableApp):
         else:
             q = self.layout(iterable)
         if self.superapp is None:
-            print 'shit'
             return output_encoding(recursively_iterate(q), u'utf-8')
         else:
             return q

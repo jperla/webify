@@ -22,6 +22,21 @@ else:
         httpserver.serve(app, host=host, port=port)
     serve = paste_serve
 
+try:
+    import cherrypy
+except ImportError, e:
+    logging.info('CherryPy could not be imported')
+else:
+    def cherrypy_serve(app, host, port, reload=False):
+        if reload:
+            raise Exception('cherrypy server does not have reloading option')
+        from cherrypy import wsgiserver
+        s = wsgiserver.CherryPyWSGIServer((host, port), app)
+        try:
+            s.start()
+        except KeyboardInterrupt:
+            s.stop()
+    serve = cherrypy_serve
 
 
 try:
@@ -34,3 +49,4 @@ else:
     serve = werkzeug_serve
         
 
+        
