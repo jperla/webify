@@ -37,93 +37,38 @@ def Url(object):
     def __repr__(self):
         return self.url
 
-class ArgParser(object):
-    def __init__(self):
-        raise NotImplementedError
+class Page(object):
+    def __init__(self, start_response):
+        self.start_response = start_response
+        status, headers = http.defaults.status_and_headers
+        self.status = status
+        self.headers = headers
+        self.response = []
 
-    def parse(self, req):
-        '''
-        Returns arg or kwarg to append to controller call
-        '''
-        raise NotImplementedError
+    def __call__(self, x):
+        self.print_response(x)
 
-class UrlArgParser(ArgParser):
-    def __init__(self):
-        raise NotImplementedError
+    def print_response(self, x):
+        self.response.append(x)
 
-    def url(self, *args, **kwargs):
-        raise NotImplementedError
+class WSGIApp(object):
+    def __init__(self, app):
+        assert(isinstance(app, App))
+        self.app = app
 
-class Template(object):
-    def __init__(self, iterable):
-        self.iterable = iterable
-
-    def __iter__(self):
-        return self.iterable
-
-class CallableApp(object):
-    def __init__(self, func):
-        raise NotImplementedError
-
-    def __call__(self, environ, start_response):
-        raise NotImplementedError
-
-class Controller(CallableApp):
-    def __init__(self, func):
-        assert(not isinstance(func, Controller))
-        self.func = func
-        self.arg_parsers = []
-        self.superapp = None
-
-    def url(self, *args, **kwargs):
-        url_arg_parser = None
-        for parser in self.arg_parsers:
-            if isinstance(parser, UrlArgParser):
-                url_arg_parser = parser
-                break
-        if url_arg_parser is None:
-            suburl = u'/'
-        else:
-            suburl = url_arg_parser.url(*args, **kwargs)
-        if self.superapp is not None:
-            return self.superapp.url(self, suburl)
-        else:
-            return suburl
-    
     def __call__(self, environ, start_response):
         req = get_req(environ)
-        args, kwargs = [], {}
-        for parser in self.arg_parsers:
-            parser_args, parser_kwargs = parser.parse(req)
-            args.extend(parser_args)
-            kwargs.update(parser_kwargs)
-        resp_iterator = self.func(req, *args, **kwargs)
+        p = Page(start_response)
+        self.app(req, p)
+        start_response(p.status, p.headers)
+        return output_encoding(recursively_iterate(p.response), 'utf-8')
 
-        # TODO: jperla: should also check to see if itself is superapp
-        first_yield = resp_iterator.next()
-        #TODO: jperla: confusing logic
-        if not isinstance(first_yield, http.status.HTTPController):
-            if isinstance(first_yield, types.TupleType):
-                #TODO: jperla: do more explicit type checking
-                if len(first_yield) != 2:
-                    raise Exception(u'Too many items in states/headers tuple: %s' % first_yield)
-                status, headers = first_yield
-                start_response(status, headers)
-                return self.body(resp_iterator)
-            else:
-                status, headers = http.defaults.status_and_headers
-                start_response(status, headers)
-                return self.body([first_yield, resp_iterator])
-        else:
-            resp = exception = first_yield
-            return resp(environ, start_response)
+class App(object):
+    def __init__(self):
+        pass
 
-    def body(self, iterable):
-        if self.superapp is not None:
-            return output_encoding(self.superapp.body(recursively_iterate(iterable)), u'utf-8')
-        else:
-            #TODO: jperla: detect encoding; don't just use utf-8
-            return output_encoding(recursively_iterate(iterable), u'utf-8')
+    def __call__(self, req, p):
+        raise NotImplementedError
 
 def output_encoding(strings, encoding):
     for s in strings:
@@ -135,7 +80,13 @@ from . import controllers
 from . import defaults
 from . import email
 from . import http
+from . import middleware
 from . import templates
 from . import tests
 from . import urls
+
+urlable = controllers.webargs.UrlableAppWrapper
+
+def wsgify(app, *middleware_to_apply):
+    return middleware.install_middleware(WSGIApp(app), middleware_to_apply)
 

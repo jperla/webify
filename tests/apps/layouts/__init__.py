@@ -26,10 +26,11 @@ layout = Layout(u'''
 app.body = layout(app.body)
 
 # Controllers
-@app.controller()
-def hello(req):
+@app.subapp()
+@webify.urlable()
+def hello(req, p):
     context = {u'name': req.params.get(u'name', u'world')}
-    yield hello_template(context, req)
+    p(hello_template(context, req))
 
 # Templates
 # This would normally be in a different file in a different module 
@@ -42,12 +43,10 @@ def hello_template(context, req):
 
 
 # Middleware
-from webify.middleware import install_middleware, EvalException
-wrapped_app = install_middleware(app, [
-                                       EvalException,
-                                      ])
+from webify.middleware import EvalException
+wrapped_app = webify.wsgi(app, EvalException)
 
 # Server
 if __name__ == '__main__':
-    webify.http.server.serve(app, host='127.0.0.1', port='8080')
+    webify.http.server.serve(wrapped_app, host='127.0.0.1', port='8080')
 

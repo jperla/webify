@@ -2,69 +2,63 @@ from __future__ import absolute_import
 
 #import chardet
 
-from ... import ArgParser, Controller, UrlArgParser
+from ... import App
 
 NoArgument = object()
 
-class ArgParserWithDefault(ArgParser):
-    def __init__(self, default):
-        '''
-        Init takes a default argument
-        '''
+class UrlableApp(App):
+    def __call__(self, req, p):
+        raise NotImplementedError
+    def url(self, *args, **kwargs):
         raise NotImplementedError
 
+def remaining_url(req):
+    remaining = req.path_info[1:]
+    # #TODO: jperla: add this later
+    #chardet.decode
+    remaining = remaining.decode(u'utf-8')
+    return remaining
+    
+class RemainingUrlableApp(UrlableApp):
+    def __init__(self, subapp):
+        self.subapp = subapp
 
-class Arguments(object):
-    def __init__(self, *args):
-        self.arg_parsers = args
-
-    def __call__(self, controller):
-        if not isinstance(controller, Controller):
-            controller = Controller(c)
-        controller.arg_parsers.extend(self.arg_parsers)
-        return controller
-
-class add(object):
-    def __init__(self, arg_parser):
-        self.arg_parser = arg_parser
-
-    def __call__(self, f):
-        controller = f if isinstance(f, Controller) else Controller(f)
-        controller.arg_parsers.append(self.arg_parser)
-        return controller
-
-class RemainingUrl(UrlArgParser):
-    def __init__(self, **kwargs):
-        self.defaults = kwargs
-        assert(len(self.defaults) <= 1)
-
-    def parse(self, req):
-        remaining = req.path_info[1:]
-        # jperla: add this later
-        #chardet.decode
-        remaining = remaining.decode(u'utf-8')
+    def __call__(self, req, p):
+        remaining = remaining_url(req)
+        self.subapp(req, p, remaining)
         
-        args, kwargs = [], self.defaults
-        if remaining != u'':
-            if len(self.defaults) == 1:
-                kwargs[self.defaults.keys()[0]] = remaining
-            else:
-                args, kwargs = [remaining], {}
-        return args, kwargs
-
     def url(self, remaining):
         return u'/%s' % remaining
 
-class SettingsArgParser(UrlArgParser):
-    #TODO: jperla: make this more powerful
-    def __init__(self, setting_name, default=None):
-        self.setting_name = setting_name
-        self.default = default
+class UrlableAppWrapper(object):
+    def __init__(self, args_func=lambda req:[], url_func=lambda:u'/'):
+        # Takes request object, returns tuple for args (or dict for kwargs??)
+        self.args_func = args_func
+        ##TODO: jperla:  Takes arbitrary, returns str or Url ?
+        self.url_func = url_func
 
-    def parse(self, req):
-        args, kwargs = [], {}
-        kwargs[self.setting_name] = req.settings[self.setting_name]
-        return args, kwargs
+    def __call__(self, controller):
+        url_func, args_func = self.url_func, self.args_func
+        class UrlableAppDecorator(UrlableApp):
+            def __init__(self, func):
+                self.func = func
+            def __call__(self, req, p):
+                args = args_func(req)
+                if isinstance(args, dict):
+                    kwargs = args
+                    args = []
+                else:
+                    kwargs = {}
+                return self.func(req, p, *args, **kwargs)
+            def url(self, *args, **kwargs):
+                return url_func(*args, **kwargs)
+        return UrlableAppDecorator(controller)
 
-    def url(self, remaining):
-        return '/%s' % remaining
+
+
+class RemainingUrlableAppWrapper(UrlableAppWrapper):
+    def __init__(self,  
+                 args_func=lambda req: (remaining_url(req),),
+                 url_func=lambda remaining: u'/%s' % remaining):
+        UrlableAppWrapper.__init__(self, args_func, url_func)
+

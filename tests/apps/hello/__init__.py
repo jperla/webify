@@ -6,34 +6,35 @@ import webify
 app = webify.defaults.app()
 
 # Controllers
-@app.controller(path='/')
-def index(req):
-    yield u'Hello, world!'
+@app.subapp(path='/')
+@webify.urlable()
+def index(req, p):
+    p(u'Hello, world!')
 
-@app.controller()
-def hello(req):
-    yield u'<form method="POST">'
+@app.subapp()
+@webify.urlable()
+def hello(req, p):
+    p(u'<form method="POST">')
     name = req.params.get('name', None)
     if name is None:
-        yield u'Hello, world! <br />'
+        p(u'Hello, world! <br />')
     else:
-        yield u'Hello, %(name)s! <br />' % {'name': name}
-    yield u'Your name: <input type="text" name="name">'
-    yield u'<input type="submit">'
-    yield u'</form>'
+        p(u'Hello, %(name)s! <br />' % {'name': name})
+    p(u'Your name: <input type="text" name="name">')
+    p(u'<input type="submit">')
+    p(u'</form>')
 
-@app.controller()
+@app.subapp()
+@webify.urlable()
 def hello_old(req):
     yield webify.http.status.redirect(hello.url())
 
 # Middleware
-from webify.middleware import install_middleware, EvalException
-wrapped_app = install_middleware(app, [
-                                       EvalException,
-                                      ])
+from webify.middleware import EvalException
+wrapped_app = webify.wsgify(app, EvalException)
 
 # Server
 from webify.http import server
 if __name__ == '__main__':
-    server.serve(app, host='127.0.0.1', port=8080)
+    server.serve(wrapped_app, host='127.0.0.1', port=8080)
 

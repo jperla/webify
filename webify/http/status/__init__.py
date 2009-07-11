@@ -9,7 +9,7 @@ HTTP301Controller = _exc.HTTPFound
 HTTP404Controller = _exc.HTTPNotFound
 
 def redirect(location, *args, **kwargs):
-    return HTTP301Controller(location=location)
+    raise HTTP301Controller(location=location)
 
 def not_found(body=''):
-    return HTTP404Controller()
+    raise HTTP404Controller()

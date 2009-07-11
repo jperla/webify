@@ -6,68 +6,34 @@ from . import standard
 
 from ..urls import defaults, dispatchers
 from .. import http as _http
-from .. import Controller, CallableApp
+from .. import App
 
 
-class App(CallableApp):
+class DispatcherApp(App):
     def __init__(self, dispatcher=defaults.dispatcher):
         #TODO: jperla: should pass an object, not a class
         self.dispatcher = dispatcher()
-        self.superapp = None
-        self.layout = None
 
-    def __call__(self, environ, start_response):
-        if self.superapp is not None:
-            resp_iterator = self.dispatcher(environ, start_response)
-            return resp_iterator
-        else:
-            try:
-                resp_iterator = self.dispatcher(environ, start_response)
-            except _http.status.HTTPController, e:
-                resp = e
-                return resp(environ, start_response)
-            else:
-                return resp_iterator
-
-
-    def controller(self, *args, **kwargs):
-        def controller_wrapper(f):
-            c = f if isinstance(f, Controller) else Controller(f)
-            s = self.subapp(*args, **kwargs)(c)
-            return s
-        return controller_wrapper
+    def __call__(self, req, p):
+        assert(isinstance(req, _http.Request))
+        app, req = self.dispatcher(req)
+        return app(req, p)
         
     def subapp(self, *args, **kwargs):
         def subapp_decorator(subapp):
-            subapp.superapp = self
-            subapp.__call__ = self._decorate_call(subapp.__call__)
+            subapp.url = self._decorate_url(subapp, subapp.url)
             self.dispatcher.register(subapp, *args, **kwargs)
             return subapp
         return subapp_decorator
 
-    def url(self, subapp, suburl):
-        url = self.dispatcher.url(subapp, suburl)
-        if self.superapp is not None:
-            super_url = self.superapp.url(self, url)
-        else:
-            super_url = url
-        return super_url
+    def _decorate_url(self, subapp, suburl):
+        def url_decorator(*args, **kwargs):
+            url = self.dispatcher.url(subapp, suburl(*args, **kwargs))
+            return url
+        return url_decorator
 
-    def body(self, iterable):
-        if self.layout is None:
-            return iterable
-        else:
-            return self.layout(iterable)
-
-    def _decorate_call(self, subapp_call):
-        def call_decorator(environment, start_response):
-            return subapp_call(environment, start_response)
-        return call_decorator
-
-
-
-class SingleApp(App):
+class SingleApp(DispatcherApp):
     def __init__(self):
-        App.__init__(self, dispatcher=dispatchers.SingleDispatcher)
+        DispatcherApp.__init__(self, dispatcher=dispatchers.SingleDispatcher)
 
 

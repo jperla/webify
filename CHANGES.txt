@@ -1,6 +1,11 @@
 Breaking Changes
 ================
 
+6/11/2009
+--------
+
+- Complete redesign of whole api intoo an all-App model
+
 4/1/2009
 --------
 

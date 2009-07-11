@@ -21,16 +21,17 @@ class SimpleDispatcher(object):
         #TODO: jperla: fix index urls
         return (self.urls[subapp] + controller_url).replace(u'//', u'/')
 
-    def __call__(self, environ, start_response):
-        path_info = environ[u'PATH_INFO'] #for debugging
-        name = wsgiref.util.shift_path_info(environ)
+    def __call__(self, req):
+        path_info = req.environ[u'PATH_INFO'] #for debugging
+        #TODO: jperla: deep copy request here?
+        name = wsgiref.util.shift_path_info(req.environ)
         if name is None:
             name = u''
         name = u'/%s' % name
         apps = self.apps
         app = apps.get(name)
         if app is not None:
-            return app(environ, start_response)
+            return app, req
         else:
             raise http.status.not_found()
 
@@ -50,10 +51,10 @@ class SingleDispatcher(object):
         assert(subapp == self.subapp)
         return u'%s' % controller_url
 
-    def __call__(self, environ, start_response):
+    def __call__(self, req):
         app = self.subapp
         if app is not None:
-            return app(environ, start_response)
+            return app, req
         else:
             raise http.status.not_found()
 

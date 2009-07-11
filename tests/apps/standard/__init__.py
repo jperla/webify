@@ -6,22 +6,21 @@ import webify
 app = webify.defaults.app()
 
 # Controllers
-@app.controller(path='/')
-def index(req):
-    yield u'Hello, world!'
+@app.subapp(path='/')
+@webify.urlable()
+def index(req, p):
+    p(u'Hello, world!')
 
 static_path = u'tests/apps/standard/static/'
 static = app.subapp(path='/static')(webify.apps.standard.static(static_path))
     
 
 # Middleware
-from webify.middleware import install_middleware, EvalException
-wrapped_app = install_middleware(app, [
-                                       EvalException,
-                                      ])
+from webify.middleware import EvalException
+wrapped_app = webify.wsgify(app, EvalException)
 
 # Server
 from webify.http import server
 if __name__ == '__main__':
-    server.serve(app, host='127.0.0.1', port=8080)
+    server.serve(wrapped_app, host='127.0.0.1', port=8080)
 
