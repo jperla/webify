@@ -94,3 +94,10 @@ urlable = controllers.webargs.UrlableAppWrapper
 def wsgify(app, *middleware_to_apply):
     return middleware.install_middleware(WSGIApp(app), middleware_to_apply)
 
+#TODO: jperla: add prefix here
+def single_app():
+    def decorator(f):
+        app = apps.SingleApp()
+        app.subapp()(controllers.webargs.RemainingUrlableAppWrapper()(f))
+        return app
+    return decorator

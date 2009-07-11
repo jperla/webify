@@ -76,7 +76,8 @@ def test_time_diff():
     assert u'hours' not in diff
 
 def test_url_generation():
-    url = simplest.hello.url('joe')
+    hello = simplest.app.dispatcher.subapp
+    url = hello.url('joe')
     assert url == u'/joe'
 
 def test_template():

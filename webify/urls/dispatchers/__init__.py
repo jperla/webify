@@ -24,10 +24,7 @@ class SimpleDispatcher(object):
     def __call__(self, req):
         path_info = req.environ[u'PATH_INFO'] #for debugging
         #TODO: jperla: deep copy request here?
-        name = wsgiref.util.shift_path_info(req.environ)
-        if name is None:
-            name = u''
-        name = u'/%s' % name
+        name = u'/%s' % (wsgiref.util.shift_path_info(req.environ) or u'')
         apps = self.apps
         app = apps.get(name)
         if app is not None:

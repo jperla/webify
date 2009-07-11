@@ -1,11 +1,7 @@
 import webify
-from webify.controllers import webargs
 
-app = webify.apps.SingleApp()
-
-@app.subapp()
-@webargs.RemainingUrlableAppWrapper()
-def hello(req, p, name):
+@webify.single_app()
+def app(req, p, name):
     times = req.params.get(u'times', 1)
     for i in xrange(int(times)):
         p(u'Hello, %s!<br />' % (name or u'world'))

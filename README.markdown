@@ -12,19 +12,15 @@ Example: a complete Webify application
 ======================================
 
     import webify
-    from webify.controllers import webargs
 
-    app = webify.apps.SingleApp()
-
-    @app.controller()
-    @webargs.add(webargs.RemainingUrl())
-    def hello(req, name=u'world'):
+    @webify.single_app()
+    def app(req, p, name):
         times = req.params.get(u'times', 1)
         for i in xrange(int(times)):
-            yield u'Hello, %s!<br />' % name
+            p(u'Hello, %s!<br />' % (name or u'world'))
 
     if __name__ == '__main__':
-        webify.run(app)
+        webify.run(webify.wsgify(app))
 
     # Try Loading http://127.0.0.1:8080/hello/world?times=1000000
 
@@ -58,25 +54,25 @@ Webify includes
 - Forms
 - Middleware
 - A production server thread
-- Smallest python app period
+- Smallest python webapps in production
 - Very extensible and easy to understand
 - Error handling framework
 - Webapp testing framework
 - Standard template filters
-- Natural code layout using modules
+- Natural code layout using python packages
 - Email framework
 - A debugging server thread
 - Web args
-- Full Unicode compliance and safety
-
+- Pluggable sub-webapps
 
 Webify still needs, in order,
 
-- Pluggable sub-webapps
+- Full Unicode compliance and safety
 - Layout system for templates
-- Documentation, auto-generated from codebase, with auto-tests
 - Sessions and authentication*
 - Models and backend storage*
+- Ecosystem of pluggable sub-webapps*
+- Documentation, auto-generated from codebase, with auto-tests
 - Testing framework data fixtures
 - Auto-admin (databrowse?)*
 - Synchronous and asynchronous signals and dispatchers*
