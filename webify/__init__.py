@@ -17,15 +17,15 @@ def get_req(environ):
     return req
 
 
-def recursively_iterate(g):
-    for item in g:
-        if isinstance(item, str):
-            raise Exception(u'Always work with unicode within your app!')
-        elif isinstance(item, unicode):
-            yield item
-        else:
-            for subitem in recursively_iterate(item):
-                yield subitem
+def recursively_iterate(item):
+    if isinstance(item, str):
+        raise Exception(u'Always work with unicode within your app!')
+    elif isinstance(item, unicode):
+        yield item
+    else:
+        for subitem in item:
+            for i in recursively_iterate(subitem):
+                yield i
 
 def Url(object):
     def __init__(self, url):
@@ -72,6 +72,10 @@ class App(object):
 
 def output_encoding(strings, encoding):
     for s in strings:
+        if not isinstance(s, unicode):
+            print s
+        else:
+            print s
         encoded = s.encode(encoding)
         yield encoded
 

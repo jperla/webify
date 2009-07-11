@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 import os
 
+import codecs
+
 from ...controllers import webargs
 
 def static(file_root='static/'):
@@ -14,8 +16,8 @@ def static(file_root='static/'):
         # #TODO: jperla: Note: security problem
         path = os.path.join(file_root, filename)
         if os.path.exists(path) and os.path.isfile(path):
-            for line in open(path, 'rb').readlines():
-                p(unicode(line))
+            #TODO: jperla: make this read in chunks
+            p(codecs.open(path, 'rb', 'utf-8').read())
         else:
             p(webify.http.status.not_found())
     return static
