@@ -62,11 +62,11 @@ Webify includes
 - A debugging server thread
 - Web args
 - Pluggable sub-webapps
+- Full Unicode compliance and safety
+- Layout system for templates
 
 Webify still needs, in order,
 
-- Full Unicode compliance and safety
-- Layout system for templates
 - Sessions and authentication*
 - Models and backend storage*
 - Ecosystem of pluggable sub-webapps*
