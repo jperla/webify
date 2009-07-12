@@ -8,5 +8,3 @@ def app(req, p, name):
 
 if __name__ == '__main__':
     webify.run(webify.wsgify(app))
-    
-# Try Loading http://127.0.0.1:8080/hello/world?times=1000000

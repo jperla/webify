@@ -59,9 +59,14 @@ class WSGIApp(object):
     def __call__(self, environ, start_response):
         req = get_req(environ)
         p = Page(start_response)
-        self.app(req, p)
-        start_response(p.status, p.headers)
-        return output_encoding(recursively_iterate(p.response), 'utf-8')
+        try:
+            self.app(req, p)
+        except http.status.HTTPController, exception:
+            resp = exception
+            return resp(environ, start_response)
+        else:
+            start_response(p.status, p.headers)
+            return output_encoding(recursively_iterate(p.response), 'utf8')
 
 class App(object):
     def __init__(self):
@@ -72,10 +77,10 @@ class App(object):
 
 def output_encoding(strings, encoding):
     for s in strings:
-        if not isinstance(s, unicode):
-            print s
+        if isinstance(s, unicode):
+            print 'arst'
         else:
-            print s
+            print 'oien'
         encoded = s.encode(encoding)
         yield encoded
 

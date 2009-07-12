@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #<!-- coding=UTF-8 -->
 from __future__ import absolute_import, with_statement
 import re
@@ -6,7 +7,7 @@ import datetime
 from .apps import first_template
 from .apps import send_email
 from .apps import hello
-#from .apps import layouts
+from .apps import layouts
 from .apps import simplest
 from .apps import standard
 
@@ -31,14 +32,12 @@ def test_simplest():
         assert u'Hello, world!' in body
         assert len(re.findall('world', body)) == 3
 
-'''
 def test_unicode():
     with get(webify.wsgify(simplest.app), '/wểrld?times=3') as r:
         assert u'200' in r.status
-        assert u'wểrld' in r.body
-        assert u'Hello, wểrld!' in r.body
-        assert len(re.findall(u'wểrld', r.body)) == 3
-'''
+        assert u'wểrld' in r.body.decode('utf8')
+        assert u'Hello, wểrld!' in r.body.decode('utf8')
+        assert len(re.findall(u'wểrld', r.body.decode('utf8'))) == 3
 
 def test_simplest_hello():
     with get(webify.wsgify(simplest.app), '/') as r:
@@ -50,12 +49,10 @@ def test_simplest_hello():
         assert u'Error' not in r.status
         assert u'Error' not in r.body
 
-'''
 def test_redirect():
     with get(webify.wsgify(hello.app), '/hello_old/') as r:
         assert u'302' in r.status
         assert u'/hello/' in r.body
-'''
 
 
 def test_remaining_url_arg_parser():
@@ -86,14 +83,12 @@ def test_template():
         assert u'joe' in r.body
         assert u'Hello, joe!' in r.body
 
-'''
 def test_layout():
-    with get(webify.wsgify(layouts.app), '/hello?name=joe') as r:
+    with get(webify.wsgify(layouts.layout_app), '/hello?name=joe') as r:
         assert u'200' in r.status
         assert u'joe' in r.body
         assert u'Hello, joe!' in r.body
         assert u'<title>' in r.body
-'''
 
 def test_static_app():
     content = u'''div {\n    color: blue;\n}\n'''

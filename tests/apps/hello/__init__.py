@@ -26,8 +26,8 @@ def hello(req, p):
 
 @app.subapp()
 @webify.urlable()
-def hello_old(req):
-    yield webify.http.status.redirect(hello.url())
+def hello_old(req, p):
+    webify.http.status.redirect(hello.url())
 
 # Middleware
 from webify.middleware import EvalException

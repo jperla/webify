@@ -1,21 +1,8 @@
 #!/usr/bin/env python
 import webify
 
-app = webify.defaults.app()
-
-class Layout(object):
-    def __init__(self, header, footer):
-        self.header = header
-        self.footer = footer
-
-    def __call__(self, body_func):
-        def body_decorator(template):
-            return webify.recursively_iterate([self.header,
-                    body_func(template),
-                    self.footer])
-        return body_decorator
-    
-layout = Layout(u'''
+# Layout app
+layout = (u'''
 <html><head>
 <title>Hello App</title>
 </head><body>
@@ -23,7 +10,14 @@ layout = Layout(u'''
 </body></html>
 ''')
 
-app.body = layout(app.body)
+
+app = webify.defaults.app()
+
+@webify.single_app()
+def layout_app(req, p, name):
+    p(layout[0])
+    app(req, p)
+    p(layout[1])
 
 # Controllers
 @app.subapp()
@@ -41,10 +35,10 @@ def hello_template(context, req):
     yield u'input type="submit">'
     yield u'form>'
 
-
 # Middleware
 from webify.middleware import EvalException
-wrapped_app = webify.wsgi(app, EvalException)
+wrapped_app = webify.wsgify(app, EvalException)
+
 
 # Server
 if __name__ == '__main__':
