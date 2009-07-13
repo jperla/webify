@@ -4,7 +4,6 @@ import os
 import codecs
 
 from ...controllers import webargs
-from .. import App
 
 def static(file_root='static/'):
     '''
