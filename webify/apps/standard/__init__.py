@@ -4,8 +4,9 @@ import os
 import codecs
 
 from ...controllers import webargs
+from .. import App
 
-class PrefixApp(webify.apps.App):
+class PrefixApp(App):
     def __init__(self, subapp, prefix):
         self.prefix = prefix
         self.subapp = subapp
