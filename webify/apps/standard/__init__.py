@@ -6,16 +6,6 @@ import codecs
 from ...controllers import webargs
 from .. import App
 
-class PrefixApp(App):
-    def __init__(self, subapp, prefix):
-        self.prefix = prefix
-        self.subapp = subapp
-
-    def __call__(self, req, p):
-        assert(req.environ[u'PATH_INFO'].startswith(self.prefix))
-        req.environ[u'PATH_INFO'] = req.environ[u'PATH_INFO'][len(self.prefix):]
-        self.subapp(req, p)
-
 def static(file_root='static/'):
     '''
     static = app.subapp(path='/static')(webify.apps.standard.static(file_root='static/'))
