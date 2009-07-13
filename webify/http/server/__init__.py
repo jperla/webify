@@ -10,6 +10,8 @@ def wsgiref_serve(app, host, port, reload=False):
 serve = wsgiref_serve 
 
 
+'''
+# jperla: Ignore paste for now because it sucks
 try:
     import paste
 except ImportError, e:
@@ -21,6 +23,7 @@ else:
         from paste import httpserver
         httpserver.serve(app, host=host, port=port)
     serve = paste_serve
+'''
 
 try:
     import cherrypy
