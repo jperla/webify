@@ -77,10 +77,6 @@ class App(object):
 
 def output_encoding(strings, encoding):
     for s in strings:
-        if isinstance(s, unicode):
-            print 'arst'
-        else:
-            print 'oien'
         encoded = s.encode(encoding)
         yield encoded
 
