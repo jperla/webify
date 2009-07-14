@@ -19,7 +19,7 @@ def get_req(environ):
 
 def recursively_iterate(item):
     if isinstance(item, str):
-        raise Exception(u'Always work with unicode within your app!')
+        raise Exception(u'Always work with unicode within your app: %s', item)
     elif isinstance(item, unicode):
         yield item
     else:
