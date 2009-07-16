@@ -10,8 +10,16 @@ from .. import App
 
 class PrefixApp(App):
     def __init__(self, subapp, prefix):
+        App.__init__(self)
         self.prefix = prefix
         self.subapp = subapp
+    
+    def wrap_url(self, suburl):
+        url = self.prefix + suburl
+        if self.parent is None:
+            return url
+        else:
+            return self.parent.wrap_url(url)
 
     def __call__(self, req, p):
         assert(req.environ[u'PATH_INFO'].startswith(self.prefix))
@@ -21,6 +29,7 @@ class PrefixApp(App):
 
 class DispatcherApp(App):
     def __init__(self, dispatcher=defaults.dispatcher):
+        App.__init__(self)
         #TODO: jperla: should pass an object, not a class
         self.dispatcher = dispatcher()
 
@@ -31,16 +40,9 @@ class DispatcherApp(App):
         
     def subapp(self, *args, **kwargs):
         def subapp_decorator(subapp):
-            subapp.url = self._decorate_url(subapp, subapp.url)
-            self.dispatcher.register(subapp, *args, **kwargs)
+            subapp.parent = self
             return subapp
         return subapp_decorator
-
-    def _decorate_url(self, subapp, suburl):
-        def url_decorator(*args, **kwargs):
-            url = self.dispatcher.url(subapp, suburl(*args, **kwargs))
-            return url
-        return url_decorator
 
 class SingleApp(DispatcherApp):
     def __init__(self):

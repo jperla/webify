@@ -70,10 +70,16 @@ class WSGIApp(object):
 
 class App(object):
     def __init__(self):
-        pass
+        self.parent = None
 
     def __call__(self, req, p):
         raise NotImplementedError
+    
+    def wrap_url(self, suburl):
+        if self.parent is None:
+            return suburl
+        else:
+            return self.parent.wrap_url(suburl)
 
 def output_encoding(strings, encoding):
     for s in strings:
