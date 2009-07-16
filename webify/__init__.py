@@ -75,11 +75,18 @@ class App(object):
     def __call__(self, req, p):
         raise NotImplementedError
     
+    def wrap_parent(f):
+    #TODO: jperla: use this everywhere somehow
+        def decorator(self, subapp, suburl):
+            if self.parent is None:
+                return suburl
+            else:
+                return self.parent.wrap_url(self, suburl)
+        return decorator
+            
+    @wrap_parent
     def wrap_url(self, subapp, suburl):
-        if self.parent is None:
-            return suburl
-        else:
-            return self.parent.wrap_url(self, suburl)
+        return suburl
 
 def output_encoding(strings, encoding):
     for s in strings:
