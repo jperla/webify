@@ -1,6 +1,27 @@
 from contextlib import contextmanager
 import itertools
 
+def template(library):
+    def decorator(f):
+        dump_all = object()
+        class Catcher(object):
+            def __init__(self):
+                self.caught = []
+            def __getitem__(self, k):
+                if s == dump_all:
+                    return caught
+                else:
+                    r = library.__getitem__(k)
+                    self.caught += r
+                    return r
+        catcher = Catcher()
+        def new_f(*args, **kwargs):
+            f(catcher, *args, **kwargs)
+            return catcher(dump_all)
+        return new_f
+    return decorator
+
+
 def h(text):
     #TODO: jperla: should sanitize html
     return text
