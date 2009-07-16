@@ -75,11 +75,11 @@ class App(object):
     def __call__(self, req, p):
         raise NotImplementedError
     
-    def wrap_url(self, suburl):
+    def wrap_url(self, subapp, suburl):
         if self.parent is None:
             return suburl
         else:
-            return self.parent.wrap_url(suburl)
+            return self.parent.wrap_url(self, suburl)
 
 def output_encoding(strings, encoding):
     for s in strings:

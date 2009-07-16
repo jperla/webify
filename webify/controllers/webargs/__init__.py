@@ -28,7 +28,11 @@ class RemainingUrlableApp(UrlableApp):
         self.subapp(req, p, remaining)
         
     def url(self, remaining):
-        return u'/%s' % remaining
+        url = u'/%s' % remaining
+        if self.parent is None:
+            return url
+        else:
+            return self.parent.wrap_url(url)
 
 class UrlableAppWrapper(object):
     def __init__(self, args_func=lambda req:[], url_func=lambda:u'/'):
@@ -51,7 +55,11 @@ class UrlableAppWrapper(object):
                     kwargs = {}
                 return self.func(req, p, *args, **kwargs)
             def url(self, *args, **kwargs):
-                return url_func(*args, **kwargs)
+                url = url_func(*args, **kwargs)
+                if self.parent is None:
+                    return url
+                else:
+                    return self.parent.wrap_url(self, url)
         return UrlableAppDecorator(controller)
 
 
