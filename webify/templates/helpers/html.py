@@ -44,7 +44,10 @@ li = _generate_tag(u'li')
 p = _generate_tag(u'p')
 td = _generate_tag(u'td')
 b = _generate_tag(u'b')
+i = _generate_tag(u'i')
+em = _generate_tag(u'em')
 title = _generate_tag(u'title')
+button = _generate_tag(u'button')
 span = _generate_tag(u'span')
 span_smaller = _generate_tag(u'span', {u'style':'font-size:smaller;'})
 
@@ -78,6 +81,7 @@ ul = _generate_block_tag(u'ul')
 head = _generate_block_tag(u'head')
 div = _generate_block_tag(u'div')
 p_block = _generate_block_tag(u'p')
+li_block = _generate_block_tag(u'li')
 td_block = _generate_block_tag(u'td')
 
 
@@ -101,8 +105,16 @@ input_password = _generate_input(u'password')
 input_hidden = _generate_input(u'hidden')
 input_file = _generate_input(u'file')
 
+def textarea(name=None, id=None, attrs={}):
+    attrs = __merge({'name':name, 'id':id}, attrs)
+    return _generate_block_tag(u'textarea', attrs)()
 
+'''
 form = _generate_block_tag(u'form', {u'method':u'POST', u'action':u''})
+'''
+def form(action=u'', method=u'POST', attrs={}):
+    attrs = __merge({'action':action, 'method':method}, attrs)
+    return _generate_block_tag(u'form', attrs)()
 
 script_block = _generate_container(u'<script',
                                    u'><!--', 
