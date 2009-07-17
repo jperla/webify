@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from contextlib import contextmanager
 
 import os
 import time
@@ -115,3 +116,39 @@ def single_app():
         app.subapp()(controllers.webargs.RemainingUrlableAppWrapper()(f))
         return app
     return decorator
+
+def template():
+    def decorator(f):
+        class Catcher(object):
+            def __init__(self):
+                self.caught = []
+            def __call__(self, r):
+                if isinstance(r, unicode):
+                    self.caught.append(r)
+                elif isinstance(r, tuple) and len(r) == 2:
+                    start,end = r
+                    assert(isinstance(start, unicode))
+                    assert(isinstance(end, unicode))
+                    class X(object):
+                        def __init__(self, c):
+                            self.c = c
+                        def __enter__(self):
+                            self.c.append(start)
+                        def __exit__(self, type, value, tb):
+                            #TODO: jperla: figure out how to deal with this
+                            self.c.append(end)
+                    return X(self.caught)
+                elif isinstance(r, str):
+                    #TODO: jperla: unify this
+                    raise Exception('unicode: %s' % r)
+                else:
+                    raise Exception('Unknown parameter, try sub()')
+            def sub(self, t):
+                self.caught.append(t)
+        def new_f(*args, **kwargs):
+            catcher = Catcher()
+            f(catcher, *args, **kwargs)
+            return catcher.caught
+        return new_f
+    return decorator
+

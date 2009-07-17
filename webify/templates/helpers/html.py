@@ -1,30 +1,10 @@
 from contextlib import contextmanager
 import itertools
 
-def template(library):
-    def decorator(f):
-        dump_all = object()
-        class Catcher(object):
-            def __init__(self):
-                self.caught = []
-            def __getitem__(self, k):
-                if s == dump_all:
-                    return caught
-                else:
-                    r = library.__getitem__(k)
-                    self.caught += r
-                    return r
-        catcher = Catcher()
-        def new_f(*args, **kwargs):
-            f(catcher, *args, **kwargs)
-            return catcher(dump_all)
-        return new_f
-    return decorator
-
 
 def h(text):
     #TODO: jperla: should sanitize html
-    return text
+    return u'%s' % text
 
 def escape_javascript(js):
     return js
@@ -47,12 +27,13 @@ def h3(text):
 def br():
     return u'<br />\n'
 
-def _generate_element(open, end_open, close, attrs):
-    attribute_html = u' '.join(u'%s="%s"' % (k, v) 
-                            for k,v in attrs.iteritems() if v is not None)
-    if attribute_html != u'':
-        attribute_html = u' ' + attribute_html
-    def new_element(html):
+def _generate_element(open, end_open, close, default_attrs):
+    def new_element(html, attrs={}):
+        attrs = __merge(default_attrs, attrs)
+        attribute_html = u' '.join(u'%s="%s"' % (k, v) 
+                                for k,v in attrs.iteritems() if v is not None)
+        if attribute_html != u'':
+            attribute_html = u' ' + attribute_html
         return open + attribute_html + end_open + html + close + u'\n'
     return new_element
 
@@ -64,6 +45,7 @@ p = _generate_tag(u'p')
 td = _generate_tag(u'td')
 b = _generate_tag(u'b')
 title = _generate_tag(u'title')
+span = _generate_tag(u'span')
 span_smaller = _generate_tag(u'span', {u'style':'font-size:smaller;'})
 
 script_src = lambda src: _generate_tag(u'script', 
@@ -72,15 +54,13 @@ script_src = lambda src: _generate_tag(u'script',
 
 def _generate_container(open, end_open, close, default_attrs={}):
     #TODO: jperla: take default arguments
-    @contextmanager
-    def new_container(p, attrs=default_attrs):
+    def new_container(attrs={}):
+        attrs = __merge(default_attrs, attrs)
         attribute_html = u' '.join(u'%s="%s"' % (k, v) 
                                 for k,v in attrs.iteritems() if v is not None)
         if attribute_html != u'':
             attribute_html = u' ' + attribute_html
-        p(open + attribute_html + end_open)
-        yield p
-        p(close)
+        return (open + attribute_html + end_open, close)
     return new_container
 
 def _generate_block_tag(tag_name, default_attrs={}):
@@ -115,17 +95,17 @@ def _generate_input(type):
                               u'id':id,}, attrs))
     return new_input
 
-input_text = _generate_input('text')
-input_submit = _generate_input('submit')
-input_password = _generate_input('password')
-input_hidden = _generate_input('hidden')
+input_text = _generate_input(u'text')
+input_submit = _generate_input(u'submit')
+input_password = _generate_input(u'password')
+input_hidden = _generate_input(u'hidden')
+input_file = _generate_input(u'file')
 
 
 form = _generate_block_tag(u'form', {u'method':u'POST', u'action':u''})
 
-script = _generate_container(u'<script'
-                             u'><!--', 
-                             u'--></script>\n',
-                             {'type':'text/javascript'})
-script_block = script
+script_block = _generate_container(u'<script',
+                                   u'><!--', 
+                                   u'--></script>\n',
+                                   {u'type':u'text/javascript'})
 
