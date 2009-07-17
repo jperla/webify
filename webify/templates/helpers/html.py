@@ -47,13 +47,19 @@ b = _generate_tag(u'b')
 i = _generate_tag(u'i')
 em = _generate_tag(u'em')
 title = _generate_tag(u'title')
-button = _generate_tag(u'button')
 span = _generate_tag(u'span')
+img = lambda src, attrs={}: _generate_tag(u'img')(u'', __merge({'src':src}, attrs))
 span_smaller = _generate_tag(u'span', {u'style':'font-size:smaller;'})
 
 script_src = lambda src: _generate_tag(u'script', 
                                        {u'type':u'text/javascript', 
                                         u'src':src})(u'')
+
+link_css = lambda href,media=u'screen': _generate_tag(u'link', 
+                                                      {u'type':u'text/css', 
+                                                       u'rel':u'Stylesheet',
+                                                       u'media':media,
+                                                       u'href':href})(u'')
 
 def _generate_container(open, end_open, close, default_attrs={}):
     #TODO: jperla: take default arguments
@@ -80,6 +86,7 @@ ol = _generate_block_tag(u'ol')
 ul = _generate_block_tag(u'ul')
 head = _generate_block_tag(u'head')
 div = _generate_block_tag(u'div')
+button = _generate_block_tag(u'button')
 p_block = _generate_block_tag(u'p')
 li_block = _generate_block_tag(u'li')
 td_block = _generate_block_tag(u'td')
