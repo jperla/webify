@@ -9,8 +9,8 @@ def h(text):
 def escape_javascript(js):
     return js
 
-def a(url, text, **kwargs):
-    options = u' '.join(u'%s="%s"' % (k, kwargs[k]) for k in kwargs)
+def a(url, text, attrs={}):
+    options = u' '.join(u'%s="%s"' % (k, attrs[k]) for k in attrs)
     return u'<a href="%(url)s" %(options)s>%(text)s</a>' % {u'url':url, 
                                                u'text':h(text),
                                                u'options':options}
