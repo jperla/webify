@@ -44,13 +44,20 @@ class Page(object):
         status, headers = http.defaults.status_and_headers
         self.status = status
         self.headers = headers
-        self.response = []
+        self.__response = []
 
     def __call__(self, x):
         self.print_response(x)
 
+    def response(self):
+        #TODO: jperla: serious work needed here
+        if self.headers[0] == http.headers.content_types.html_utf8:
+            return output_encoding(recursively_iterate(self.__response), 'utf8')
+        else:
+            return self.__response
+
     def print_response(self, x):
-        self.response.append(x)
+        self.__response.append(x)
 
 class WSGIApp(object):
     def __init__(self, app):
@@ -67,7 +74,7 @@ class WSGIApp(object):
             return resp(environ, start_response)
         else:
             start_response(p.status, p.headers)
-            return output_encoding(recursively_iterate(p.response), 'utf8')
+            return p.response()
 
 class App(object):
     def __init__(self):
