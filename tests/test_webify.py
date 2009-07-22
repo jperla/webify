@@ -84,7 +84,7 @@ def test_template():
         assert u'Hello, joe!' in r.body
 
 def test_layout():
-    with get(webify.wsgify(layouts.layout_app), '/hello?name=joe') as r:
+    with get(webify.wsgify(layouts.app), '/hello?name=joe') as r:
         assert u'200' in r.status
         assert u'joe' in r.body
         assert u'Hello, joe!' in r.body

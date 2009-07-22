@@ -1,39 +1,35 @@
 #!/usr/bin/env python
+from __future__ import with_statement
 import webify
+from webify.templates.helpers import html
 
-# Layout app
-layout = (u'''
-<html><head>
-<title>Hello App</title>
-</head><body>
-''', u'''
-</body></html>
-''')
-
+# Layout template
+@webify.template()
+def page_layout(p, title, inside):
+    with p(html.html()):
+        with p(html.head()):
+            p(html.title(title))
+        with p(html.body()):
+            p.sub(inside)
 
 app = webify.defaults.app()
-
-@webify.single_app()
-def layout_app(req, p, name):
-    p(layout[0])
-    app(req, p)
-    p(layout[1])
 
 # Controllers
 @app.subapp()
 @webify.urlable()
 def hello(req, p):
-    context = {u'name': req.params.get(u'name', u'world')}
-    p(hello_template(context, req))
+    name = req.params.get(u'name', u'world')
+    p(page_layout(u'Hello App', hello_template(name)))
 
 # Templates
 # This would normally be in a different file in a different module 
-def hello_template(context, req):
-    yield u'form method="POST">'
-    yield u'Hello, %(name)s! <br />' % context
-    yield u'Your name: <input type="text" name="name">'
-    yield u'input type="submit">'
-    yield u'form>'
+@webify.template()
+def hello_template(p, name):
+    with p(html.form(action=u'', method='GET')):
+        p(u'Hello, %s! <br />' % name)
+        p(u'Your name: %s' % html.input_text('name'))
+        p(html.input_submit('name'))
+
 
 # Middleware
 from webify.middleware import EvalException
