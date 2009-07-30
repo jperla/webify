@@ -26,6 +26,8 @@ def h3(text):
 
 def br():
     return u'<br />\n'
+def hr():
+    return u'<hr />\n'
 
 def _generate_element(open, end_open, close, default_attrs):
     def new_element(html, attrs={}):
@@ -43,6 +45,7 @@ def _generate_tag(name, attrs={}):
 li = _generate_tag(u'li')
 p = _generate_tag(u'p')
 td = _generate_tag(u'td')
+th = _generate_tag(u'th')
 b = _generate_tag(u'b')
 i = _generate_tag(u'i')
 em = _generate_tag(u'em')
@@ -82,6 +85,8 @@ html = _generate_block_tag(u'html')
 body = _generate_block_tag(u'body')
 tr = _generate_block_tag(u'tr')
 table = _generate_block_tag(u'table')
+thead = _generate_block_tag(u'thead')
+tbody = _generate_block_tag(u'tbody')
 ol = _generate_block_tag(u'ol')
 ul = _generate_block_tag(u'ul')
 head = _generate_block_tag(u'head')

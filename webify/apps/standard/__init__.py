@@ -25,6 +25,7 @@ def static(file_root='static/'):
             #p(codecs.open(path, 'rb', encoding).read())
             p(open(path, 'rb').read())
         else:
+            #TODO: jperla: webify is not defined; namespace it
             p(webify.http.status.not_found())
     return static
 
