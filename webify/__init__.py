@@ -155,7 +155,7 @@ def template():
         def new_f(*args, **kwargs):
             catcher = Catcher()
             f(catcher, *args, **kwargs)
-            return catcher.caught
+            return ''.join(catcher.caught)
         return new_f
     return decorator
 

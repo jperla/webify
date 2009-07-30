@@ -77,7 +77,7 @@ def _generate_container(open, end_open, close, default_attrs={}):
 
 def _generate_block_tag(tag_name, default_attrs={}):
     return _generate_container(u'<%s' % tag_name, 
-                               u'>', 
+                               u'>\n', 
                                u'</%s>\n' % tag_name,
                                default_attrs)
 
@@ -116,6 +116,12 @@ input_submit = _generate_input(u'submit')
 input_password = _generate_input(u'password')
 input_hidden = _generate_input(u'hidden')
 input_file = _generate_input(u'file')
+#TODO: jperla: do elements for all html4/5
+#TODO: jperla: ignore end tags and quotes??
+
+def input_radio(name=None, value=None, id=None, attrs={}):
+    attrs = __merge({'name':name, 'value':value, 'id':id, 'type':'radio'}, attrs)
+    return _generate_block_tag(u'input', attrs)()
 
 def textarea(name=None, id=None, attrs={}):
     attrs = __merge({'name':name, 'id':id}, attrs)
