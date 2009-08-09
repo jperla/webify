@@ -6,7 +6,8 @@ from ... import http
 
 
 class SimpleDispatcher(object):
-    def __init__(self):
+    def __init__(self, default=None):
+        self.default = default
         self.apps, self.urls = {}, {}
 
     def register(self, subapp, path=None):
@@ -30,7 +31,37 @@ class SimpleDispatcher(object):
         if app is not None:
             return app, req
         else:
-            raise http.status.not_found()
+            if self.default is not None:
+                return self.default, req
+            else:
+                raise http.status.not_found()
+
+class BooleanDispatcher(object):
+    def __init__(self):
+        self.apps, self.urls = {}, {}
+
+    def register(self, subapp, boolean=func, prefix=''):
+        if boolean in self.apps:
+            raise Exception(u'Already dispatching with function: %s' % boolean)
+        self.apps[boolean] = subapp
+        self.urls[subapp] = prefix
+
+    def url(self, subapp, controller_url):
+        assert(subapp in self.urls)
+        #TODO: jperla: fix index url slashes bug
+        return (self.urls[subapp] + controller_url).replace(u'//', u'/')
+
+    def __call__(self, req):
+        path_info = req.environ[u'PATH_INFO'] #for debugging
+        apps = self.apps
+        for boolean, subapp in apps.iteritems():
+            matches, remaining = boolean(path_info)
+            if matches:
+                #TODO: jperla: deep copy request?
+                req.environ[u'PATH_INFO'] = remaining
+                return subapp, req
+        # No matches
+        raise http.status.not_found()
 
 class SingleDispatcher(object):
     def __init__(self):
