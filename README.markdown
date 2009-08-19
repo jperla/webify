@@ -64,6 +64,7 @@ Webify includes
 - Pluggable sub-webapps
 - Full Unicode compliance and safety
 - Layout system for templates
+- RSS Feeds
 
 Webify still needs, in order,
 
@@ -78,7 +79,6 @@ Webify still needs, in order,
 - Internationalization*
 - CSRF protection
 - Sitemaps
-- RSS Feeds
 
 *requires a hard design decision
 

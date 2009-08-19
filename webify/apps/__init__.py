@@ -128,7 +128,7 @@ class SimpleDispatchApp(DispatchApp):
         if subapp == self.default:
             return suburl
         else:
-            return (self.urls[subapp] + controller_url).replace(u'//', u'/')
+            return (self.urls[subapp] + suburl).replace(u'//', u'/')
 
 class BooleanDispatchApp(DispatchApp):
     def __init__(self, default=None):
