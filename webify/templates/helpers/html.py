@@ -9,11 +9,10 @@ def h(text):
 def escape_javascript(js):
     return js
 
-def a(url, text, attrs={}):
+def a(href=None, text='', attrs={}):
+    attrs['href'] = href
     options = u' '.join(u'%s="%s"' % (k, attrs[k]) for k in attrs)
-    return u'<a href="%(url)s" %(options)s>%(text)s</a>' % {u'url':url, 
-                                               u'text':h(text),
-                                               u'options':options}
+    return u'<a %(options)s>%(text)s</a>' % { u'text':h(text), u'options':options}
 
 def h1(text):
     return u'<h1>%s</h1>\n' % h(text)
