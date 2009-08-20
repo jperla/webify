@@ -65,6 +65,7 @@ Webify includes
 - Full Unicode compliance and safety
 - Layout system for templates
 - RSS Feeds
+- Cache system
 
 Webify still needs, in order,
 
@@ -75,9 +76,9 @@ Webify still needs, in order,
 - Testing framework data fixtures
 - Auto-admin (databrowse?)*
 - Synchronous and asynchronous signals and dispatchers*
-- Cache system*
 - Internationalization*
 - CSRF protection
+- XSS Protection
 - Sitemaps
 
 *requires a hard design decision

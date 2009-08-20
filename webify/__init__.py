@@ -109,6 +109,7 @@ from . import http
 from . import middleware
 from . import templates
 from . import tests
+from . import tools
 from . import urls
 
 urlable = controllers.webargs.UrlableAppWrapper

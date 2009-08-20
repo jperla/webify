@@ -1,32 +1,53 @@
 import time as _time
 
-class Cached(object):
+class Cache(object):
     def __init__(self):
         raise NotImplementedError
-    def cached(self, key, object, time=3600):
+    def set(self, key, value, time=0):
         raise NotImplementedError
-        
-class MemoryCached(Cached):
+    def get(self, key):
+        raise NotImplementedError
+    #TODO: jperla: implement these
+    def delete(self, key):
+        raise NotImplementedError
+    def set_multi(self, key):
+        raise NotImplementedError
+    def get_multi(self, key):
+        raise NotImplementedError
+    def cached(self, key, f, time=0):
+        found = self.get(key)
+        if not found:
+            cached = f()
+            self.set(key, cached)
+            return cached
+        else:
+            return found
+
+class MemoryCache(Cache):
     def __init__(self):
         self.cache = {}
-    def __call__(self, key, f, time=0):
+    def set(self, key, value, time=0):
         if time == 0:
             time = 1000000000
         now = _time.time()
-        if key not in self.cache or now > self.cache[key][0]:
-            self.cache[key] = (now + time, f())
-        return self.cache[key]
-    #TODO: jperla: add get/set/etc
+        self.cache[key] = (now + time, value)
+    def get(self, key):
+        now = _time.time()
+        if key in self.cache:
+            expires, value = self.cache[key]
+            if now > expires:
+                return value
+            else:
+                return None
+        else:
+            return None
 
-        
-class MemcachedCached(Cached):
+class MemcachedCache(Cache):
     def __init__(self, locations):
         self.memcache_client = memcache.Client(locations)
-    def __call__(self, key, f, time=0):
-        cached = self.memcache_client.get(key)
-        if not cached:
-            cached = f()
-            self.memcache_client.set(key, time=time)
-        return cached
+    def set(self, key, value, time=0):
+        self.memcache_client.set(key, time=time)
+    def get(self, key):
+        return self.memcache_client.get(key)
 
         
