@@ -69,6 +69,8 @@ Webify includes
 
 Webify still needs, in order,
 
+- Redo dispatchers
+- Redo redirecters and page objects / templates
 - Sessions and authentication*
 - Models and backend storage*
 - Ecosystem of pluggable sub-webapps*
