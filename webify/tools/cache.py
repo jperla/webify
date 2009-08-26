@@ -56,6 +56,7 @@ class MemoryCache(Cache):
         self.cache = {}
     def delete(self, key):
         del(self.cache[key])
+        return True
     def set(self, key, value, time=0):
         if time == 0:
             time = 1000000000
@@ -73,6 +74,16 @@ class MemoryCache(Cache):
         else:
             return None
 
+class DummyCache(Cache):
+    def __init__(self):
+        pass
+    def delete(self, key):
+        return True
+    def get(self, key):
+        return None
+    def set(self, key, value, time=0):
+        return True
+
 class MemcachedCache(Cache):
     def __init__(self, locations):
         self.memcache_client = memcache.Client(locations)
@@ -81,5 +92,24 @@ class MemcachedCache(Cache):
         return True
     def get(self, key):
         return self.memcache_client.get(key)
+    def delete(self, key):
+        v = self.memcache_client.delete(key)
+        return True if v != 0 else False
+    def add(self, key, value, time=0):
+        v = self.memcache_client.add(key, value, time=time)
+        return True if v != 0 else False
+    def replace(self, key, value, time=0):
+        v = self.memcache_client.replace(key, value, time=time)
+        return True if v != 0 else False
+    def get_multi(self, keys):
+        return self.memcache_client.get_multi(keys)
+    def delete_multi(self, keys):
+        return self.memcache_client.delete_multi(keys)
+    def set_multi(self, mapping, time):
+        return self.memcache_client.set_multi(keys)
+    def incr(self, key):
+        return self.memcache_client.incr(key)
+    def decr(self, key):
+        return self.memcache_client.decr(key)
 
         
