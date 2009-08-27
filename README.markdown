@@ -44,7 +44,7 @@ Programming and Design Philosophy
 
 TODO
 ====
-Webify includes 
+Webify already includes 
 
 - Controllers
 - Templates and helpers
@@ -77,11 +77,11 @@ Webify still needs, in order,
 - Documentation, auto-generated from codebase, with auto-tests
 - Testing framework data fixtures
 - Auto-admin (databrowse?)*
-- Synchronous and asynchronous signals and dispatchers*
-- Internationalization*
 - CSRF protection
 - XSS Protection
 - Sitemaps
+- Internationalization*
+- Synchronous and asynchronous signals and dispatchers*
 
 *requires a hard design decision
 
